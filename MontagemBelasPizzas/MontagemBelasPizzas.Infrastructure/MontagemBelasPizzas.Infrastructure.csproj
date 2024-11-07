@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\" />
+    <Folder Include="Repositories\Employees\Commands\" />
+    <Folder Include="Repositories\Employees\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
