@@ -12,4 +12,8 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
+	<Target Name="Tailwind" BeforeTargets="Compile">
+		<Exec Command="npx tailwindcss -i ./Styles/tailwind.css -o ./wwwroot/styles.css" />
+    </Target>
+
 </Project>
