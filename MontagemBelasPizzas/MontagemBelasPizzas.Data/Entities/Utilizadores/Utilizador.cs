@@ -8,7 +8,7 @@
         public string NIF { get; set; } // Número único de 9 dígitos
         public DateTime DataDeNascimento { get; set; } // Data de nascimento
         public DateTime DataDeCriacao { get; set; } // Data de criação do registo
-        public string? ImagemUrl { get; set; } // Caminho ou URL da imagem (opcional)
+        public string? ImagemURL { get; set; } // Caminho ou URL da imagem (opcional)
         public int QuantidadeDeProdutosRealizados { get; set; } // Número inteiro não negativo
         public int QuantidadeDeProdutosRejeitados { get; set; } // Número inteiro não negativo
         public decimal MediaDeSatisfacao { get; set; } // Valor decimal entre 1.0 e 5.0

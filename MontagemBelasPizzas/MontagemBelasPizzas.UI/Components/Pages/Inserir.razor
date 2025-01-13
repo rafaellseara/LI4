@@ -1,0 +1,151 @@
+﻿@page "/inserir"
+@using MontagemBelasPizzas.Data.Entities.Utilizadores
+@using MontagemBelasPizzas.Data.Entities.Produtos
+@inject UtilizadorService UtilizadorService
+@inject ProdutoService ProdutoService
+@rendermode InteractiveServer
+
+<PageTitle>Inserir Dados</PageTitle>
+
+<h1>Inserir Utilizador</h1>
+
+<p>Aqui podes adicionar um novo utilizador na base de dados.</p>
+
+<div>
+    <div>
+        <label for="utilizador-nome">Nome:</label>
+        <input id="utilizador-nome" type="text" @bind="NovoUtilizador.Nome" />
+    </div>
+    <div>
+        <label for="utilizador-senha">Senha:</label>
+        <input id="utilizador-senha" type="password" @bind="NovoUtilizador.Senha" />
+    </div>
+    <div>
+        <label for="utilizador-nif">NIF:</label>
+        <input id="utilizador-nif" type="text" @bind="NovoUtilizador.NIF" />
+    </div>
+    <div>
+        <label for="utilizador-data">Data de Nascimento:</label>
+        <input id="utilizador-data" type="date" @bind="NovoUtilizador.DataDeNascimento" />
+    </div>
+    <div>
+        <label for="utilizador-url">Imagem URL:</label>
+        <input id="utilizador-url" type="text" @bind="NovoUtilizador.ImagemURL" />
+    </div>
+    <div>
+        <label for="utilizador-tipo">Tipo:</label>
+        <select id="utilizador-tipo" @bind="NovoUtilizador.Tipo">
+            <option value="Administrador">Administrador</option>
+            <option value="Funcionario">Funcionário</option>
+        </select>
+    </div>
+    <button class="btn btn-primary" @onclick="InserirUtilizador">Inserir Utilizador</button>
+</div>
+
+<hr />
+
+<h1>Inserir Produto</h1>
+
+<p>Aqui podes adicionar um novo produto na base de dados.</p>
+
+<div>
+    <div>
+        <label for="produto-nome">Nome:</label>
+        <input id="produto-nome" type="text" @bind="NovoProduto.Nome" />
+    </div>
+    <div>
+        <label for="produto-categoria">Categoria:</label>
+        <input id="produto-categoria" type="text" @bind="NovoProduto.Categoria" />
+    </div>
+    <div>
+        <label for="produto-preco">Preço:</label>
+        <input id="produto-preco" type="number" step="0.01" @bind="NovoProduto.Preco" />
+    </div>
+    <div>
+        <label for="produto-quantidade">Quantidade em Stock:</label>
+        <input id="produto-quantidade" type="number" @bind="NovoProduto.QuantidadeEmStock" />
+    </div>
+    <div>
+        <label for="produto-url">Imagem URL:</label>
+        <input id="produto-url" type="text" @bind="NovoProduto.ImagemURL" />
+    </div>
+    <button class="btn btn-primary" @onclick="InserirProduto">Inserir Produto</button>
+</div>
+
+<hr />
+
+<h2>Resultados:</h2>
+<p>@Mensagem</p>
+
+@code {
+    private Utilizador NovoUtilizador = new()
+        {
+            Nome = string.Empty,
+            Senha = string.Empty,
+            NIF = string.Empty,
+            DataDeNascimento = DateTime.Now,
+            DataDeCriacao = DateTime.Now,
+            ImagemURL = string.Empty,
+            QuantidadeDeProdutosRealizados = 0,
+            QuantidadeDeProdutosRejeitados = 0,
+            MediaDeSatisfacao = 0,
+            TempoMedioPorProduto = TimeSpan.Zero,
+            Tipo = TipoUtilizador.Funcionario
+        };
+
+    private Produto NovoProduto = new()
+        {
+            Nome = string.Empty,
+            Categoria = string.Empty,
+            Preco = 0,
+            QuantidadeEmStock = 0,
+            ImagemURL = string.Empty
+        };
+
+    private string Mensagem;
+
+    private async Task InserirUtilizador()
+    {
+        try
+        {
+            await UtilizadorService.CreateUtilizador(NovoUtilizador);
+            Mensagem = "Utilizador inserido com sucesso!";
+            // Reset do formulário
+            NovoUtilizador = new()
+                {
+                    Nome = string.Empty,
+                    Senha = string.Empty,
+                    NIF = string.Empty,
+                    DataDeNascimento = DateTime.Now,
+                    ImagemURL = string.Empty,
+                    Tipo = TipoUtilizador.Funcionario
+                };
+        }
+        catch (Exception ex)
+        {
+            Mensagem = $"Erro ao inserir utilizador: {ex.Message}";
+        }
+    }
+
+    private async Task InserirProduto()
+    {
+        try
+        {
+            await ProdutoService.CreateProduto(NovoProduto);
+            Mensagem = "Produto inserido com sucesso!";
+            // Reset do formulário
+            NovoProduto = new()
+                {
+                    Nome = string.Empty,
+                    Categoria = string.Empty,
+                    Preco = 0,
+                    QuantidadeEmStock = 0,
+                    ImagemURL = string.Empty
+                };
+        }
+        catch (Exception ex)
+        {
+            Mensagem = $"Erro ao inserir produto: {ex.Message}";
+        }
+    }
+}

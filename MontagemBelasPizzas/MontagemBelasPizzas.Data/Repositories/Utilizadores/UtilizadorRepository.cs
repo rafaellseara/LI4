@@ -44,7 +44,11 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
                 utilizador.NIF,
                 utilizador.DataDeNascimento,
                 utilizador.DataDeCriacao,
-                utilizador.ImagemUrl,
+                utilizador.ImagemURL,
+                utilizador.QuantidadeDeProdutosRealizados,
+                utilizador.QuantidadeDeProdutosRejeitados,
+                utilizador.MediaDeSatisfacao,
+                utilizador.TempoMedioPorProduto,
                 utilizador.Tipo
             };
 
@@ -63,7 +67,11 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
                 utilizador.NIF,
                 utilizador.DataDeNascimento,
                 utilizador.DataDeCriacao,
-                utilizador.ImagemUrl,
+                utilizador.ImagemURL,
+                utilizador.QuantidadeDeProdutosRealizados,
+                utilizador.QuantidadeDeProdutosRejeitados,
+                utilizador.MediaDeSatisfacao,
+                utilizador.TempoMedioPorProduto,
                 utilizador.Tipo
             };
 
