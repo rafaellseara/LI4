@@ -8,10 +8,6 @@ using MontagemBelasPizzas.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-
 // Register dependencies
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 
@@ -33,6 +29,10 @@ builder.Services.AddScoped<LinhaDeMontagemService>();
 builder.Services.AddScoped<MontagemService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<UtilizadorService>();
+
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
