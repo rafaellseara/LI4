@@ -1,0 +1,56 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Authorization
+@using MontagemBelasPizzas.UI.Authentication
+@using MontagemBelasPizzas.Data.Entities.Utilizadores
+
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
+@inject MontagemBelasPizzas.Business.Services.Utilizadores.UtilizadorService UtilizadorService
+
+
+
+<h3>Login</h3>
+
+<EditForm Model="user" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Id:</label>
+        <InputNumber @bind-Value="user.Id" />
+    </div>
+    <div>
+        <label>Password:</label>
+        <InputText @bind-Value="user.Senha" InputType="password" />
+    </div>
+
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    private Utilizador user = new();
+    private string? errorMessage;
+
+    private async Task HandleLogin()
+    {
+        Console.WriteLine("foda-se");
+        try 
+        {
+            var matchedUser = await UtilizadorService.ValidateCredentials(user.Id, user.Senha);
+            if (matchedUser is not null)
+            {
+                Console.WriteLine("foda-se2");
+                await ((CustomAuthenticationStateProvider)AuthProvider).Login(matchedUser);
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Credenciais inválidas. Por favor, tente novamente.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Erro: {ex.Message}";
+        }
+    }
+}

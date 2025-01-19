@@ -1,4 +1,6 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
@@ -8,3 +10,14 @@ Welcome to your new app.
 
 
 <h1 class="text-3xl font-bold underline text-red-500">A Zita é doente</h1>
+
+<button class="btn btn-primary" @onclick="LogAndNavigate">Click me</button>
+
+
+@code {
+    private void LogAndNavigate()
+    {
+        Console.WriteLine("Botão clicado");
+        NavigationManager.NavigateTo("/login");
+    }
+}

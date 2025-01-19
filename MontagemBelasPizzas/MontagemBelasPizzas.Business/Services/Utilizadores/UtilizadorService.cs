@@ -36,5 +36,23 @@ public class UtilizadorService
     {
         await _utilizadorRepository.Delete(id);
     }
+
+    public async Task<Utilizador?> ValidateCredentials(int id, string senha)
+    {
+        Console.WriteLine("foda-se3");
+        Console.WriteLine(id);
+        var utilizador = await _utilizadorRepository.GetById(id);
+
+        if (utilizador == null) return null;
+        Console.WriteLine("foda-se4");
+
+        if (senha == utilizador.Senha)
+        {
+            return utilizador;
+        }
+
+        return null;
+    }
+
 }
 

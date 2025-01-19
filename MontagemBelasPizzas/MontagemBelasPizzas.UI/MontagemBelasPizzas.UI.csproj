@@ -15,6 +15,22 @@
 		<Watch Include="./Styles/app.css" Exclude="./wwwroot/**/*;obj\**\*;bin\**\*" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Components\Shared\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+	  <PackageReference Include="Microsoft.AspNetCore" Version="2.3.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.3.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.12" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.12" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.12" />
+	  <PackageReference Include="Quick.AspNetCore.Components.Web.Extensions" Version="6.0.2" />
+	  <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+	</ItemGroup>
+
 	<Target Name="Tailwind" BeforeTargets="Compile">
 		<Exec Command="npx tailwindcss -i ./Styles/app.css -o ./wwwroot/css/app.css" />
 	</Target>

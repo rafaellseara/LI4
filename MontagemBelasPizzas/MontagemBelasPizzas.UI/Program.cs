@@ -5,6 +5,10 @@ using MontagemBelasPizzas.Data.Repositories.Produtos;
 using MontagemBelasPizzas.Data.Repositories.Utilizadores;
 using MontagemBelasPizzas.Data.Interfaces;
 using MontagemBelasPizzas.Data;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Components.Authorization;
+using MontagemBelasPizzas.UI.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +38,22 @@ builder.Services.AddScoped<UtilizadorService>();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+
+// Authentication
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login"; // Página de login
+        options.LogoutPath = "/logout"; // Página de logout
+    });
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<ProtectedLocalStorage>();
+builder.Services.AddAuthenticationCore();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddCascadingAuthenticationState();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,6 +67,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+app.UseAuthentication();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
