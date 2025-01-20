@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthProvider
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">MontagemBelasPizzas.UI</a>
     </div>
@@ -8,23 +11,99 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+        @if (!isAuthenticated)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="home">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Página Inicial
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login">
+                    <span class="bi bi-box-arrow-in-right-nav-menu" aria-hidden="true"></span> Login
+                </NavLink>
+            </div>
+        }
+        else if (userRole == "Administrador")
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admin-home">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Página Inicial
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admin-products">
+                    <span class="bi bi-box-nav-menu" aria-hidden="true"></span> Produtos
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="inventory">
+                    <span class="bi bi-archive-nav-menu" aria-hidden="true"></span> Inventário
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="ingredients">
+                    <span class="bi bi-egg-fried-nav-menu" aria-hidden="true"></span> Ingredientes
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admins">
+                    <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Administradores
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="employees">
+                    <span class="bi bi-person-badge-fill-nav-menu" aria-hidden="true"></span> Funcionários
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="logout">
+                    <span class="bi bi-box-arrow-right-nav-menu" aria-hidden="true"></span> Logout
+                </NavLink>
+            </div>
+        }
+        else if (userRole == "Funcionario")
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="employee-home">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Página Inicial
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="employee-products">
+                    <span class="bi bi-box-nav-menu" aria-hidden="true"></span> Produtos
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="logout">
+                    <span class="bi bi-box-arrow-right-nav-menu" aria-hidden="true"></span> Logout
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
 
+@code {
+    private AuthenticationState? authState;
+    private bool isAuthenticated = false;
+    private string? userName;
+    private string? userRole;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                isAuthenticated = true;
+                userName = user.Identity.Name;
+                userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            }
+
+            StateHasChanged();
+        }
+    }
+}

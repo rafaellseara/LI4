@@ -33,13 +33,11 @@
 
     private async Task HandleLogin()
     {
-        Console.WriteLine("foda-se");
         try 
         {
             var matchedUser = await UtilizadorService.ValidateCredentials(user.Id, user.Senha);
             if (matchedUser is not null)
             {
-                Console.WriteLine("foda-se2");
                 await ((CustomAuthenticationStateProvider)AuthProvider).Login(matchedUser);
                 Navigation.NavigateTo("/");
             }

@@ -1,5 +1,44 @@
-﻿<h3>AdminHome</h3>
+﻿@page "/admin-home"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavigationManager
+@using MontagemBelasPizzas.UI.Components.Pages.Account
+
+<div class="container mt-5">
+    @if (!isAuthenticated)
+    {
+        <Login />
+    }
+    else if (userRole == "Administrador")
+    {
+        <h1 class="display-4">Página de Admin</h1>
+        <p class="lead">Bem-vindo à página de administração.</p>
+    }
+    else
+    {
+        <AccessDenied />
+    }
+</div>
 
 @code {
+    private AuthenticationState? authState;
+    private bool isAuthenticated = false;
+    private string? userRole;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                isAuthenticated = true;
+                userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            }
+
+            StateHasChanged();
+        }
+    }
 }
