@@ -1,0 +1,451 @@
+-- Procedure para obter utilizador por ID
+CREATE PROCEDURE spUtilizador_GetById
+    @Id INT
+AS
+BEGIN
+    SELECT *
+    FROM Utilizador
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter todos os utilizadores
+CREATE PROCEDURE spUtilizador_GetAll
+AS
+BEGIN
+    SELECT *
+    FROM Utilizador;
+END;
+GO
+
+-- Procedure para inserir um novo utilizador
+CREATE PROCEDURE spUtilizador_Insert
+    @Nome NVARCHAR(45),
+    @Senha NVARCHAR(45),
+    @NIF CHAR(9),
+    @DataDeNascimento DATETIME2(7),
+    @ImagemURL NVARCHAR(90),
+    @Tipo NVARCHAR(15)
+AS
+BEGIN
+    INSERT INTO Utilizador (Nome, Senha, NIF, DataDeNascimento, ImagemURL, Tipo)
+    VALUES (@Nome, @Senha, @NIF, @DataDeNascimento, @ImagemURL, @Tipo);
+
+    SELECT SCOPE_IDENTITY() AS NovoId;
+END;
+GO
+
+-- Procedure para atualizar utilizador existente
+CREATE PROCEDURE spUtilizador_Update
+    @Id INT,
+    @Nome NVARCHAR(45),
+    @Senha NVARCHAR(45),
+    @NIF CHAR(9),
+    @DataDeNascimento DATETIME2(7),
+    @ImagemURL NVARCHAR(90),
+    @QuantidadeDeProdutosRealizados INT,
+    @QuantidadeDeProdutosRejeitados INT,
+    @MediaDeSatisfacao DECIMAL(4,2),
+    @TempoMedioPorProduto TIME,
+    @Tipo NVARCHAR(15)
+AS
+BEGIN
+    UPDATE Utilizador
+    SET Nome = @Nome,
+        Senha = @Senha,
+        NIF = @NIF,
+        DataDeNascimento = @DataDeNascimento,
+        ImagemURL = @ImagemURL,
+        QuantidadeDeProdutosRealizados = @QuantidadeDeProdutosRealizados,
+        QuantidadeDeProdutosRejeitados = @QuantidadeDeProdutosRejeitados,
+        MediaDeSatisfacao = @MediaDeSatisfacao,
+        TempoMedioPorProduto = @TempoMedioPorProduto,
+        Tipo = @Tipo
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para apagar utilizador
+CREATE PROCEDURE spUtilizador_Delete
+    @Id INT
+AS
+BEGIN
+    DELETE FROM Utilizador
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter produto por ID
+CREATE PROCEDURE spProduto_GetById
+    @Id INT
+AS
+BEGIN
+    SELECT *
+    FROM Produto
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter todos os produtos
+CREATE PROCEDURE spProduto_GetAll
+AS
+BEGIN
+    SELECT *
+    FROM Produto;
+END;
+GO
+
+-- Procedure para inserir um novo produto
+CREATE PROCEDURE spProduto_Insert
+    @Nome NVARCHAR(45),
+    @Categoria NVARCHAR(15),
+    @Preco DECIMAL(4,2),
+    @QuantidadeDeRealizacoes INT,
+    @QuantidadeDeVendas INT,
+    @QuantidadeDeRejeicoes INT,
+    @MediaDeSatisfacao DECIMAL(4,2),
+    @MediaDoTempoDeMontagem TIME,
+    @QuantidadeEmStock INT,
+    @ImagemURL NVARCHAR(90),
+    @IdAdministrador INT
+AS
+BEGIN
+    INSERT INTO Produto (Nome, Categoria, Preco, QuantidadeDeRealizacoes, QuantidadeDeVendas, QuantidadeDeRejeicoes, MediaDeSatisfacao, MediaDoTempoDeMontagem, QuantidadeEmStock, ImagemURL, IdAdministrador)
+    VALUES (@Nome, @Categoria, @Preco, @QuantidadeDeRealizacoes, @QuantidadeDeVendas, @QuantidadeDeRejeicoes, @MediaDeSatisfacao, @MediaDoTempoDeMontagem, @QuantidadeEmStock, @ImagemURL, @IdAdministrador);
+
+    SELECT SCOPE_IDENTITY() AS NovoId;
+END;
+GO
+
+-- Procedure para atualizar produto existente
+CREATE PROCEDURE spProduto_Update
+    @Id INT,
+    @Nome NVARCHAR(45),
+    @Categoria NVARCHAR(15),
+    @Preco DECIMAL(4,2),
+    @QuantidadeDeRealizacoes INT,
+    @QuantidadeDeVendas INT,
+    @QuantidadeDeRejeicoes INT,
+    @MediaDeSatisfacao DECIMAL(4,2),
+    @MediaDoTempoDeMontagem TIME,
+    @QuantidadeEmStock INT,
+    @ImagemURL NVARCHAR(90),
+    @IdAdministrador INT
+AS
+BEGIN
+    UPDATE Produto
+    SET Nome = @Nome,
+        Categoria = @Categoria,
+        Preco = @Preco,
+        QuantidadeDeRealizacoes = @QuantidadeDeRealizacoes,
+        QuantidadeDeVendas = @QuantidadeDeVendas,
+        QuantidadeDeRejeicoes = @QuantidadeDeRejeicoes,
+        MediaDeSatisfacao = @MediaDeSatisfacao,
+        MediaDoTempoDeMontagem = @MediaDoTempoDeMontagem,
+        QuantidadeEmStock = @QuantidadeEmStock,
+        ImagemURL = @ImagemURL,
+        IdAdministrador = @IdAdministrador
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para apagar produto
+CREATE PROCEDURE spProduto_Delete
+    @Id INT
+AS
+BEGIN
+    DELETE FROM Produto
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter ingrediente por ID
+CREATE PROCEDURE spIngrediente_GetById
+    @Id INT
+AS
+BEGIN
+    SELECT *
+    FROM Ingrediente
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter todos os ingredientes
+CREATE PROCEDURE spIngrediente_GetAll
+AS
+BEGIN
+    SELECT *
+    FROM Ingrediente;
+END;
+GO
+
+-- Procedure para inserir um novo ingrediente
+CREATE PROCEDURE spIngrediente_Insert
+    @Nome NVARCHAR(45),
+    @Preco DECIMAL(4,2),
+    @QuantidadeEmStock INT,
+    @EmUso BIT,
+    @ImagemURL NVARCHAR(90),
+    @IdAdministrador INT
+AS
+BEGIN
+    INSERT INTO Ingrediente (Nome, Preco, QuantidadeEmStock, EmUso, ImagemURL, IdAdministrador)
+    VALUES (@Nome, @Preco, @QuantidadeEmStock, @EmUso, @ImagemURL, @IdAdministrador);
+
+    SELECT SCOPE_IDENTITY() AS NovoId;
+END;
+GO
+
+-- Procedure para atualizar ingrediente existente
+CREATE PROCEDURE spIngrediente_Update
+    @Id INT,
+    @Nome NVARCHAR(45),
+    @Preco DECIMAL(4,2),
+    @QuantidadeEmStock INT,
+    @EmUso BIT,
+    @ImagemURL NVARCHAR(90),
+    @IdAdministrador INT
+AS
+BEGIN
+    UPDATE Ingrediente
+    SET Nome = @Nome,
+        Preco = @Preco,
+        QuantidadeEmStock = @QuantidadeEmStock,
+        EmUso = @EmUso,
+        ImagemURL = @ImagemURL,
+        IdAdministrador = @IdAdministrador
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para apagar ingrediente
+CREATE PROCEDURE spIngrediente_Delete
+    @Id INT
+AS
+BEGIN
+    DELETE FROM Ingrediente
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter montagem por ID
+CREATE PROCEDURE spMontagem_GetById
+    @Id INT
+AS
+BEGIN
+    SELECT *
+    FROM Montagem
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter todas as montagens
+CREATE PROCEDURE spMontagem_GetAll
+AS
+BEGIN
+    SELECT *
+    FROM Montagem;
+END;
+GO
+
+-- Procedure para inserir uma nova montagem
+CREATE PROCEDURE spMontagem_Insert
+    @IdIngrediente INT,
+    @IdProduto INT,
+    @Ordem INT,
+    @Descricao NVARCHAR(90)
+AS
+BEGIN
+    INSERT INTO Montagem (IdIngrediente, IdProduto, Ordem, Descricao)
+    VALUES (@IdIngrediente, @IdProduto, @Ordem, @Descricao);
+
+    SELECT SCOPE_IDENTITY() AS NovoId;
+END;
+GO
+
+-- Procedure para atualizar montagem existente
+CREATE PROCEDURE spMontagem_Update
+    @Id INT,
+    @IdIngrediente INT,
+    @IdProduto INT,
+    @Ordem INT,
+    @Descricao NVARCHAR(90)
+AS
+BEGIN
+    UPDATE Montagem
+    SET IdIngrediente = @IdIngrediente,
+        IdProduto = @IdProduto,
+        Ordem = @Ordem,
+        Descricao = @Descricao
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para apagar montagem
+CREATE PROCEDURE spMontagem_Delete
+    @Id INT
+AS
+BEGIN
+    DELETE FROM Montagem
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter linha de montagem por ID
+CREATE PROCEDURE spLinhaDeMontagem_GetById
+    @Id INT
+AS
+BEGIN
+    SELECT *
+    FROM LinhaDeMontagem
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter todas as linhas de montagem
+CREATE PROCEDURE spLinhaDeMontagem_GetAll
+AS
+BEGIN
+    SELECT *
+    FROM LinhaDeMontagem;
+END;
+GO
+
+-- Procedure para inserir uma nova linha de montagem
+CREATE PROCEDURE spLinhaDeMontagem_Insert
+    @DataDeInicio DATETIME2(7),
+    @DataDeFim DATETIME2(7),
+    @Estado BIT,
+    @IdFuncionario INT,
+    @IdProduto INT
+AS
+BEGIN
+    INSERT INTO LinhaDeMontagem (DataDeInicio, DataDeFim, Estado, IdFuncionario, IdProduto)
+    VALUES (@DataDeInicio, @DataDeFim, @Estado, @IdFuncionario, @IdProduto);
+
+    SELECT SCOPE_IDENTITY() AS NovoId;
+END;
+GO
+
+-- Procedure para atualizar linha de montagem existente
+CREATE PROCEDURE spLinhaDeMontagem_Update
+    @Id INT,
+    @DataDeInicio DATETIME2(7),
+    @DataDeFim DATETIME2(7),
+    @Estado BIT,
+    @IdFuncionario INT,
+    @IdProduto INT
+AS
+BEGIN
+    UPDATE LinhaDeMontagem
+    SET DataDeInicio = @DataDeInicio,
+        DataDeFim = @DataDeFim,
+        Estado = @Estado,
+        IdFuncionario = @IdFuncionario,
+        IdProduto = @IdProduto
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para apagar linha de montagem
+CREATE PROCEDURE spLinhaDeMontagem_Delete
+    @Id INT
+AS
+BEGIN
+    DELETE FROM LinhaDeMontagem
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter uma operação por ID
+CREATE PROCEDURE spOperacao_GetById
+    @Id INT
+AS
+BEGIN
+    SELECT * 
+    FROM (
+        SELECT Id, Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, NULL AS IdIngrediente, NULL AS IdProduto, 'Operacao' AS Tipo
+        FROM Operacao
+        UNION ALL
+        SELECT Id, Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, IdIngrediente, NULL AS IdProduto, 'Compra' AS Tipo
+        FROM Compra
+        UNION ALL
+        SELECT Id, Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, NULL AS IdIngrediente, IdProduto, 'Venda' AS Tipo
+        FROM Venda
+    ) Operacoes
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter todas as operações
+CREATE PROCEDURE spOperacao_GetAll
+AS
+BEGIN
+    SELECT * 
+    FROM (
+        SELECT Id, Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, NULL AS IdIngrediente, NULL AS IdProduto, 'Operacao' AS Tipo
+        FROM Operacao
+        UNION ALL
+        SELECT Id, Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, IdIngrediente, NULL AS IdProduto, 'Compra' AS Tipo
+        FROM Compra
+        UNION ALL
+        SELECT Id, Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, NULL AS IdIngrediente, IdProduto, 'Venda' AS Tipo
+        FROM Venda
+    ) Operacoes;
+END;
+GO
+
+-- Procedure para inserir uma operação base
+CREATE PROCEDURE spOperacao_Insert
+    @Quantidade INT,
+    @ValorUnitario DECIMAL(10,2),
+    @ValorTotal DECIMAL(10,2),
+    @DataDaOperacao DATETIME2(7),
+    @IdAdministrador INT
+AS
+BEGIN
+    INSERT INTO Operacao (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador)
+    VALUES (@Quantidade, @ValorUnitario, @ValorTotal, @DataDaOperacao, @IdAdministrador);
+END;
+GO
+
+-- Procedure para apagar uma operação
+CREATE PROCEDURE spOperacao_Delete
+    @Id INT
+AS
+BEGIN
+    DELETE FROM Operacao WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para inserir uma compra
+CREATE PROCEDURE spCompra_Insert
+    @Quantidade INT,
+    @ValorUnitario DECIMAL(10,2),
+    @ValorTotal DECIMAL(10,2),
+    @DataDaOperacao DATETIME2(7),
+    @IdAdministrador INT,
+    @IdIngrediente INT
+AS
+BEGIN
+    INSERT INTO Compra (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, IdIngrediente)
+    VALUES (@Quantidade, @ValorUnitario, @ValorTotal, @DataDaOperacao, @IdAdministrador, @IdIngrediente);
+END;
+GO
+
+-- Procedure para inserir uma venda
+CREATE PROCEDURE spVenda_Insert
+    @Quantidade INT,
+    @ValorUnitario DECIMAL(10,2),
+    @ValorTotal DECIMAL(10,2),
+    @DataDaOperacao DATETIME2(7),
+    @IdAdministrador INT,
+    @IdProduto INT
+AS
+BEGIN
+    INSERT INTO Venda (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, IdProduto)
+    VALUES (@Quantidade, @ValorUnitario, @ValorTotal, @DataDaOperacao, @IdAdministrador, @IdProduto);
+END;
+GO
+
+

@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MontagemBelasPizzas.Busines
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{FC58229A-B819-49CB-89E3-6D2983B185EC}"
 	ProjectSection(SolutionItems) = preProject
+		databaseData.txt = databaseData.txt
 		procedures.txt = procedures.txt
+		proceduresNew.txt = proceduresNew.txt
 		script.txt = script.txt
 	EndProjectSection
 EndProject
