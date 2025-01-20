@@ -1,5 +1,49 @@
-﻿<h3>AdminAdministrators</h3>
+﻿@page "/administrators"
+@inject ILogger<Administrators> Logger
+@rendermode InteractiveServer
+
+<TableComponent TItem="Administrator"
+                Title="Administradores"
+                ColumnHeaders="columnHeaders"
+                Items="AdministratorsData"
+                PropertySelectors="propertySelectors"
+                OnAddClick="HandleAddClick"
+                OnRemoveClick="HandleRemoveClick" />
 
 @code {
+    private List<string> columnHeaders = new List<string>
+    {
+        "Nome", "ID"
+    };
 
+    private List<Func<Administrator, object>> propertySelectors = new List<Func<Administrator, object>>
+    {
+        a => a.Name,
+        a => a.Id
+    };
+
+    private List<Administrator> AdministratorsData = new List<Administrator>
+    {
+        new Administrator { Name = "Mário José da Silva", Id = 4232 },
+        new Administrator { Name = "Ana Maria Costa", Id = 5123 }
+    };
+
+    private void HandleAddClick()
+    {
+        Logger.LogInformation("Add button clicked!");
+        // Logic for adding a new administrator (e.g., open a modal or navigate to a form)
+    }
+
+    private void HandleRemoveClick(Administrator administrator)
+    {
+        AdministratorsData.Remove(administrator);
+        Logger.LogInformation($"Removed: {administrator.Name}");
+        StateHasChanged();
+    }
+
+    public class Administrator
+    {
+        public string Name { get; set; } = string.Empty;
+        public int Id { get; set; }
+    }
 }

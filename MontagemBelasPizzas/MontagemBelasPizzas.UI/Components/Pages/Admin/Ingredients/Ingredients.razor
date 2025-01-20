@@ -1,5 +1,139 @@
-﻿<h3>AdminIngredients</h3>
+﻿@page "/ingredients"
+@inject ILogger<Ingredients> Logger
+
+<div class="p-6">
+    <!-- Search and Order -->
+    <div class="flex justify-between items-center mb-4">
+        <!-- Search -->
+        <div class="flex items-center border rounded px-2 space-x-2">
+            <input type="text" placeholder="Pesquisar" class="p-2 outline-none"
+                   @bind="SearchTerm" @bind:event="oninput" />
+            <select class="outline-none p-1" @bind="SelectedSearchColumn">
+                @for (var i = 0; i < ColumnHeaders.Count; i++)
+                {
+                    <option value="@i">@ColumnHeaders[i]</option>
+                }
+            </select>
+        </div>
+        <!-- Order Dropdown -->
+        <div>
+            <select class="p-2 rounded border" @bind="SelectedOrderColumn">
+                <option value="">Ordenar por...</option>
+                @for (var i = 0; i < ColumnHeaders.Count; i++)
+                {
+                    <option value="@i">@ColumnHeaders[i]</option>
+                }
+            </select>
+        </div>
+        <!-- Add Button -->
+        <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600" @onclick="HandleAddClick">
+            + Adicionar
+        </button>
+    </div>
+
+    <!-- Ingredients List -->
+    <div class="space-y-4">
+        @foreach (var ingredient in FilteredIngredients)
+        {
+            <div class="flex items-center justify-between border rounded-md p-4 shadow">
+                <!-- Image and details -->
+                <div class="flex items-center space-x-4">
+                    <img src="@ingredient.ImageUrl" alt="Image" class="h-12 w-12 rounded-full" />
+                    <div>
+                        <h3 class="text-lg font-semibold">@ingredient.Name</h3>
+                        <p class="text-sm text-gray-600">
+                            Quantidade: @ingredient.Quantity | Preço: @ingredient.Price€ | Em uso: @(ingredient.InUse ? "sim" : "não")
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex space-x-2">
+                    <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" @onclick="() => HandleRemoveClick(ingredient)">
+                        ✖ Remover
+                    </button>
+                    <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600" @onclick="() => HandleEditClick(ingredient)">
+                        ✎ Editar
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 
 @code {
+    private List<string> ColumnHeaders = new List<string>
+    {
+        "Nome", "Quantidade", "Preço", "Em uso"
+    };
 
+    private List<Ingredient> IngredientsData = new List<Ingredient>
+    {
+        new Ingredient { Name = "Fiambre", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/ham.png" },
+        new Ingredient { Name = "Cogumelos", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/mushrooms.png" },
+        new Ingredient { Name = "Peperoni", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/pepperoni.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" },
+        new Ingredient { Name = "Camarão", Quantity = 30, Price = 10, InUse = true, ImageUrl = "/images/shrimp.png" }
+    };
+
+    private string SearchTerm = string.Empty;
+    private int SelectedSearchColumn = 0;
+    private int SelectedOrderColumn = 0;
+
+    private IEnumerable<Ingredient> FilteredIngredients => IngredientsData
+        .Where(i => SearchTerm == string.Empty || MatchesSearchTerm(i))
+        .OrderBy(i => SelectedOrderColumn >= 0 ? GetPropertyValue(i, SelectedOrderColumn) : null);
+
+    private void HandleAddClick()
+    {
+        Logger.LogInformation("Add button clicked!");
+        // Logic for adding a new ingredient
+    }
+
+    private void HandleEditClick(Ingredient ingredient)
+    {
+        Logger.LogInformation($"Edit button clicked for: {ingredient.Name}");
+        // Logic for editing the ingredient
+    }
+
+    private void HandleRemoveClick(Ingredient ingredient)
+    {
+        IngredientsData.Remove(ingredient);
+        Logger.LogInformation($"Removed: {ingredient.Name}");
+        StateHasChanged();
+    }
+
+    private bool MatchesSearchTerm(Ingredient ingredient)
+    {
+        var value = GetPropertyValue(ingredient, SelectedSearchColumn)?.ToString()?.ToLower() ?? string.Empty;
+        return value.Contains(SearchTerm.ToLower());
+    }
+
+    private object GetPropertyValue(Ingredient ingredient, int columnIndex)
+    {
+        return columnIndex switch
+        {
+            0 => ingredient.Name,
+            1 => ingredient.Quantity,
+            2 => ingredient.Price,
+            3 => ingredient.InUse ? "sim" : "não",
+            _ => null
+        };
+    }
+
+    public class Ingredient
+    {
+        public string Name { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+        public bool InUse { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+    }
 }

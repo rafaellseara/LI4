@@ -4,20 +4,93 @@
 @inject NavigationManager NavigationManager
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 
-<div class="container mt-5">
-    @if (!isAuthenticated)
-    {
-        <Login />
-    }
-    else if (userRole == "Administrador")
-    {
-        <h1 class="display-4">Página de Admin</h1>
-        <p class="lead">Bem-vindo à página de administração.</p>
-    }
-    else
-    {
-        <AccessDenied />
-    }
+<div class="p-8 space-y-6">
+    <!-- Search and Filters -->
+    <div class="flex justify-between items-center">
+        <!-- Search and Order -->
+        <div class="flex justify-between items-center mb-4">
+            <!-- Search -->
+            <div class="flex items-center border rounded px-2 space-x-2">
+                <input type="text" placeholder="Pesquisar" class="p-2 outline-none"
+                       @bind="SearchTerm" @bind:event="oninput" />
+                <select class="outline-none p-1" @bind="SelectedSearchColumn">
+                    @for (var i = 0; i < ColumnHeaders.Count; i++)
+                    {
+                        <option value="@i">@ColumnHeaders[i]</option>
+                    }
+                </select>
+            </div>
+            <!-- Order Dropdown -->
+            <div>
+                <select class="p-2 rounded border" @bind="SelectedOrderColumn">
+                    <option value="">Ordenar por...</option>
+                    @for (var i = 0; i < ColumnHeaders.Count; i++)
+                    {
+                        <option value="@i">@ColumnHeaders[i]</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics Section -->
+    <div class="flex justify-between space-x-4">
+        <div class="bg-orange-500 text-white p-4 rounded-lg flex-1 text-center">
+            <p class="font-bold text-lg">Custo Total:</p>
+            <p class="text-2xl">@TotalCost.ToString("C")</p>
+        </div>
+        <div class="bg-green-500 text-white p-4 rounded-lg flex-1 text-center">
+            <p class="font-bold text-lg">Receita Total:</p>
+            <p class="text-2xl">@TotalRevenue.ToString("C")</p>
+        </div>
+        <div class="bg-yellow-500 text-white p-4 rounded-lg flex-1 text-center">
+            <p class="font-bold text-lg">Margem de Lucro:</p>
+            <p class="text-2xl">@ProfitMargin.ToString("C")</p>
+        </div>
+    </div>
+
+
+    <!-- Graphs Section -->
+    <div class="flex space-x-6">
+        <div class="flex-1 p-4 bg-white border rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-4">Histórico de Vendas</h2>
+            <ChartComponent Data="@SalesData"/>
+        </div>
+        <div class="flex-1 p-4 bg-white border rounded-lg shadow">
+            <h2 class="text-lg font-semibold mb-4">Produtos Mais Vendidos</h2>
+            <BarChartComponent Data="@TopProducts"/>
+        </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="p-4 bg-white border rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-4">Histórico</h2>
+        <table class="table-auto w-full border-collapse">
+            <thead>
+            <tr class="bg-gray-200">
+                <th class="border px-4 py-2">Tipo</th>
+                <th class="border px-4 py-2">Nome</th>
+                <th class="border px-4 py-2">ID</th>
+                <th class="border px-4 py-2">Data</th>
+                <th class="border px-4 py-2">Quantidade</th>
+                <th class="border px-4 py-2">Preço</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var record in FilteredHistory)
+            {
+                <tr class="hover:bg-gray-100">
+                    <td class="border px-4 py-2">@record.Type</td>
+                    <td class="border px-4 py-2">@record.Name</td>
+                    <td class="border px-4 py-2">@record.Id</td>
+                    <td class="border px-4 py-2">@record.Date.ToString("dd/MM/yyyy")</td>
+                    <td class="border px-4 py-2">@record.Quantity</td>
+                    <td class="border px-4 py-2">@record.Price.ToString("C")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @code {
@@ -41,4 +114,76 @@
             StateHasChanged();
         }
     }
+    
+    private string SearchTerm { get; set; } = string.Empty;
+    private int SelectedSearchColumn { get; set; } = 0;
+    private int? SelectedOrderColumn { get; set; } = null;
+    
+    private decimal TotalCost => History.Sum(record => record.Price * record.Quantity);
+    private decimal TotalRevenue => History.Sum(record => record.Price * record.Quantity * 1.5m); // Example multiplier for revenue
+    private decimal ProfitMargin => TotalRevenue - TotalCost;
+
+
+    private List<string> ColumnHeaders = new List<string>
+    {
+        "Tipo", "Nome", "ID", "Data", "Quantidade", "Preço"
+    };
+
+    private List<Record> History = new List<Record>
+    {
+        new Record { Type = "Produto", Name = "Pizza Margherita", Id = 101, Date = DateTime.Parse("2024-02-12"), Quantity = 200, Price = 450.00m },
+        new Record { Type = "Ingrediente", Name = "Queijo", Id = 201, Date = DateTime.Parse("2024-01-15"), Quantity = 50, Price = 120.00m },
+        new Record { Type = "Produto", Name = "Pizza Pepperoni", Id = 102, Date = DateTime.Parse("2024-03-10"), Quantity = 180, Price = 520.00m },
+        new Record { Type = "Ingrediente", Name = "Molho de Tomate", Id = 202, Date = DateTime.Parse("2024-01-18"), Quantity = 300, Price = 80.00m },
+        new Record { Type = "Produto", Name = "Pizza Vegetariana", Id = 103, Date = DateTime.Parse("2024-02-25"), Quantity = 120, Price = 500.00m },
+        new Record { Type = "Ingrediente", Name = "Azeitonas", Id = 203, Date = DateTime.Parse("2024-02-01"), Quantity = 70, Price = 40.00m },
+        new Record { Type = "Produto", Name = "Pizza de Camarão", Id = 104, Date = DateTime.Parse("2024-04-05"), Quantity = 90, Price = 600.00m },
+        new Record { Type = "Ingrediente", Name = "Camarão", Id = 204, Date = DateTime.Parse("2024-01-28"), Quantity = 100, Price = 200.00m },
+        new Record { Type = "Produto", Name = "Pizza de Frango", Id = 105, Date = DateTime.Parse("2024-03-12"), Quantity = 140, Price = 480.00m },
+        new Record { Type = "Ingrediente", Name = "Frango", Id = 205, Date = DateTime.Parse("2024-02-15"), Quantity = 80, Price = 150.00m },
+        new Record { Type = "Produto", Name = "Pizza Quatro Queijos", Id = 106, Date = DateTime.Parse("2024-04-10"), Quantity = 110, Price = 530.00m },
+        new Record { Type = "Ingrediente", Name = "Bacon", Id = 206, Date = DateTime.Parse("2024-03-01"), Quantity = 60, Price = 100.00m },
+        new Record { Type = "Produto", Name = "Pizza de Bacon", Id = 107, Date = DateTime.Parse("2024-05-02"), Quantity = 100, Price = 570.00m },
+        new Record { Type = "Ingrediente", Name = "Orégãos", Id = 207, Date = DateTime.Parse("2024-01-10"), Quantity = 150, Price = 30.00m },
+        new Record { Type = "Produto", Name = "Pizza de Atum", Id = 108, Date = DateTime.Parse("2024-02-20"), Quantity = 95, Price = 540.00m },
+        new Record { Type = "Ingrediente", Name = "Atum", Id = 208, Date = DateTime.Parse("2024-03-05"), Quantity = 85, Price = 180.00m }
+        // Adicionar mais registros conforme necessário
+    };
+
+    private IEnumerable<Record> FilteredHistory => History
+        .Where(record => string.IsNullOrEmpty(SearchTerm) || MatchesSearchTerm(record))
+        .OrderBy(record => SelectedOrderColumn.HasValue ? GetPropertyValue(record, SelectedOrderColumn.Value) : null);
+
+    private bool MatchesSearchTerm(Record record)
+    {
+        var value = GetPropertyValue(record, SelectedSearchColumn)?.ToString()?.ToLower() ?? string.Empty;
+        return value.Contains(SearchTerm.ToLower());
+    }
+
+    private object GetPropertyValue(Record record, int columnIndex)
+    {
+        return columnIndex switch
+        {
+            0 => record.Type,
+            1 => record.Name,
+            2 => record.Id,
+            3 => record.Date,
+            4 => record.Quantity,
+            5 => record.Price,
+            _ => null
+        };
+    }
+
+    public class Record
+    {
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public DateTime Date { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+    }
+    
+    private object SalesData => new { }; // Replace with actual data
+    private object TopProducts => new { }; // Replace with actual data
 }

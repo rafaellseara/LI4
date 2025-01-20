@@ -1,5 +1,72 @@
-﻿<h3>AdminProducts</h3>
+﻿@page "/products"
+@inject ILogger<Products> Logger
+@rendermode InteractiveServer
+
+<TableComponent TItem="Product"
+                Title="Produtos"
+                ColumnHeaders="columnHeaders"
+                Items="ProductsData"
+                PropertySelectors="propertySelectors"
+                ImageSelector="p => p.ImageUrl"
+                OnAddClick="HandleAddClick"
+                OnEditClick="HandleEditClick"
+                OnRemoveClick="HandleRemoveClick" />
 
 @code {
+    private List<string> columnHeaders = new List<string>
+    {
+        "Nome", "Categoria", "ID", "Preço", "Inventário", "Realizações", "Vendas", "Rejeições", "Satisfação", "Média de tempo"
+    };
 
+    private List<Func<Product, object>> propertySelectors = new List<Func<Product, object>>
+    {
+        p => p.Name,
+        p => p.Category,
+        p => p.Id,
+        p => $"{p.Price}€",
+        p => p.Inventory,
+        p => p.Achievements,
+        p => p.Sales,
+        p => p.Rejections,
+        p => p.Satisfaction,
+        p => p.AverageTime
+    };
+
+    private List<Product> ProductsData = new List<Product>
+    {
+        new Product { Name = "Pizza Peperoni", Category = "Vegan", Id = 101, Price = 3, Inventory = 251, Achievements = 556, Sales = 305, Rejections = 0, Satisfaction = "88%", AverageTime = "23 min", ImageUrl = "path-to-image-1" },
+        new Product { Name = "Pizza Margherita", Category = "Vegetariana", Id = 102, Price = 2.5, Inventory = 200, Achievements = 500, Sales = 280, Rejections = 5, Satisfaction = "90%", AverageTime = "20 min", ImageUrl = "path-to-image-2" }
+    };
+
+    private void HandleAddClick()
+    {
+        Logger.LogInformation("Add button clicked!");
+    }
+
+    private void HandleEditClick(Product product)
+    {
+        Logger.LogInformation($"Edit button clicked for: {product.Name}");
+    }
+
+    private void HandleRemoveClick(Product product)
+    {
+        ProductsData.Remove(product);
+        Logger.LogInformation($"Removed: {product.Name}");
+        StateHasChanged();
+    }
+
+    public class Product
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public int Id { get; set; }
+        public double Price { get; set; }
+        public int Inventory { get; set; }
+        public int Achievements { get; set; }
+        public int Sales { get; set; }
+        public int Rejections { get; set; }
+        public string Satisfaction { get; set; } = string.Empty;
+        public string AverageTime { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+    }
 }

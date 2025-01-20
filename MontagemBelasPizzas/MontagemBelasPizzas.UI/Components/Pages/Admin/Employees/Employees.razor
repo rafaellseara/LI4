@@ -1,5 +1,75 @@
-﻿<h3>AdminEmployees</h3>
+﻿@page "/employees"
+@inject ILogger<Employees> Logger
+@inject UtilizadorService UtilizadorService
+
+<TableComponent TItem="Utilizador"
+                Title="Funcionários"
+                ColumnHeaders="columnHeaders"
+                Items="FuncionariosData"
+                PropertySelectors="propertySelectors"
+                OnAddClick="HandleAddClick"
+                OnEditClick="HandleEditClick"
+                OnRemoveClick="HandleRemoveClick" />
 
 @code {
+    private List<string> columnHeaders = new List<string>
+    {
+        "Nome", "ID", "Data de Registo", "Produtos Realizados", "Produtos Rejeitados", "Satisfação", "Tempo Médio"
+    };
 
+    private List<Func<Utilizador, object>> propertySelectors = new List<Func<Utilizador, object>>
+    {
+        u => u.Nome,
+        u => u.Id,
+        u => u.DataDeCriacao.ToString("yyyy-MM-dd"),
+        u => u.QuantidadeDeProdutosRealizados,
+        u => u.QuantidadeDeProdutosRejeitados,
+        u => $"{u.MediaDeSatisfacao:F1}%", // Format satisfaction as a percentage
+        u => u.TempoMedioPorProduto.ToString(@"hh\:mm\:ss") // Format TimeSpan
+    };
+
+    private List<Utilizador> FuncionariosData = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Retrieve employees from the database
+            var allUtilizadores = await UtilizadorService.GetAllUtilizadores();
+            FuncionariosData = allUtilizadores
+                .Where(u => u.Tipo == TipoUtilizador.Funcionario) // Filter by 'Funcionario'
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load employees.");
+        }
+    }
+
+    private void HandleAddClick()
+    {
+        Logger.LogInformation("Add button clicked!");
+        // Implement logic for adding a new employee
+    }
+
+    private void HandleEditClick(Utilizador utilizador)
+    {
+        Logger.LogInformation($"Edit button clicked for: {utilizador.Nome}");
+        // Implement logic for editing an employee
+    }
+
+    private async Task HandleRemoveClick(Utilizador utilizador)
+    {
+        try
+        {
+            await UtilizadorService.DeleteUtilizador(utilizador.Id);
+            FuncionariosData.Remove(utilizador);
+            Logger.LogInformation($"Removed: {utilizador.Nome}");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, $"Failed to remove employee: {utilizador.Nome}");
+        }
+    }
 }
