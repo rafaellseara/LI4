@@ -1,49 +1,104 @@
 ﻿@page "/admins"
 @inject ILogger<Administrators> Logger
+@inject UtilizadorService UtilizadorService
 @using MontagemBelasPizzas.UI.Components.Shared
+@using MontagemBelasPizzas.UI.Components.Pages.Account
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavigationManager
 
-<TableComponent TItem="Administrator"
-                Title="Administradores"
-                ColumnHeaders="columnHeaders"
-                Items="AdministratorsData"
-                PropertySelectors="propertySelectors"
-                OnAddClick="HandleAddClick"
-                OnRemoveClick="HandleRemoveClick" />
+@if (!isAuthenticated)
+{
+    <Login />
+}
+else if (userRole == "Funcionario")
+{
+    <AccessDenied />
+}
+else if (userRole == "Administrador")
+{
+    <TableComponent TItem="Utilizador"
+                    Title="Administradores"
+                    ColumnHeaders="columnHeaders"
+                    Items="AdministratorsData"
+                    PropertySelectors="propertySelectors"
+                    OnAddClick="HandleAddClick"
+                    OnRemoveClick="HandleRemoveClick" />
+}
+
 
 @code {
+    // Validate authenticated User
+    private AuthenticationState? authState;
+    private bool isAuthenticated = false;
+    private string? userName;
+    private string? userRole;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                isAuthenticated = true;
+                userName = user.Identity.Name;
+                userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    // Get the Administrators
     private List<string> columnHeaders = new List<string>
     {
         "Nome", "ID"
     };
 
-    private List<Func<Administrator, object>> propertySelectors = new List<Func<Administrator, object>>
+    private List<Func<Utilizador, object>> propertySelectors = new List<Func<Utilizador, object>>
     {
-        a => a.Name,
-        a => a.Id
+        u => u.Nome,
+        u => u.Id
     };
 
-    private List<Administrator> AdministratorsData = new List<Administrator>
+    private List<Utilizador> AdministratorsData = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        new Administrator { Name = "Mário José da Silva", Id = 4232 },
-        new Administrator { Name = "Ana Maria Costa", Id = 5123 }
-    };
+        try
+        {
+            // Retrieve administrators from the database
+            var allUtilizadores = await UtilizadorService.GetAllUtilizadores();
+            AdministratorsData = allUtilizadores
+                .Where(u => u.Tipo == TipoUtilizador.Administrador) // Filter by 'Administrador'
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load administrators.");
+        }
+    }
 
     private void HandleAddClick()
     {
-        Logger.LogInformation("Add button clicked!");
-        // Logic for adding a new administrator (e.g., open a modal or navigate to a form)
+        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
+        NavigationManager.NavigateTo("/admins/add");
     }
 
-    private void HandleRemoveClick(Administrator administrator)
+    private async Task HandleRemoveClick(Utilizador administrador)
     {
-        AdministratorsData.Remove(administrator);
-        Logger.LogInformation($"Removed: {administrator.Name}");
-        StateHasChanged();
-    }
-
-    public class Administrator
-    {
-        public string Name { get; set; } = string.Empty;
-        public int Id { get; set; }
+        try
+        {
+            await UtilizadorService.DeleteUtilizador(administrador.Id);
+            AdministratorsData.Remove(administrador);
+            Logger.LogInformation($"Removed: {administrador.Nome}");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, $"Failed to remove administrator: {administrador.Nome}");
+        }
     }
 }

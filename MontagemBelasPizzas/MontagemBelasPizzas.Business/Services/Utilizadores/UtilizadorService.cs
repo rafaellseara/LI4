@@ -39,12 +39,10 @@ public class UtilizadorService
 
     public async Task<Utilizador?> ValidateCredentials(int id, string senha)
     {
-        Console.WriteLine("foda-se3");
         Console.WriteLine(id);
         var utilizador = await _utilizadorRepository.GetById(id);
 
         if (utilizador == null) return null;
-        Console.WriteLine("foda-se4");
 
         if (senha == utilizador.Senha)
         {

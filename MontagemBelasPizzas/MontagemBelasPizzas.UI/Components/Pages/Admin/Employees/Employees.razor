@@ -2,17 +2,58 @@
 @inject ILogger<Employees> Logger
 @inject UtilizadorService UtilizadorService
 @using MontagemBelasPizzas.UI.Components.Shared
+@using Microsoft.AspNetCore.Components.Authorization
+@using MontagemBelasPizzas.UI.Components.Pages.Account
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavigationManager
 
-<TableComponent TItem="Utilizador"
-                Title="Funcionários"
-                ColumnHeaders="columnHeaders"
-                Items="FuncionariosData"
-                PropertySelectors="propertySelectors"
-                OnAddClick="HandleAddClick"
-                OnEditClick="HandleEditClick"
-                OnRemoveClick="HandleRemoveClick" />
+@if (!isAuthenticated)
+{
+    <Login/>
+}
+else if (userRole == "Funcionario")
+{
+    <AccessDenied />
+}
+else if (userRole == "Administrador")
+{
+    <TableComponent TItem="Utilizador"
+                    Title="Funcionários"
+                    ColumnHeaders="columnHeaders"
+                    Items="FuncionariosData"
+                    PropertySelectors="propertySelectors"
+                    OnAddClick="HandleAddClick"
+                    OnEditClick="HandleEditClick"
+                    OnRemoveClick="HandleRemoveClick" />
+}
+
 
 @code {
+    // Validate authenticated User
+    private AuthenticationState? authState;
+    private bool isAuthenticated = false;
+    private string? userName;
+    private string? userRole;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                isAuthenticated = true;
+                userName = user.Identity.Name;
+                userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    // Get the Employees 
     private List<string> columnHeaders = new List<string>
     {
         "Nome", "ID", "Data de Registo", "Produtos Realizados", "Produtos Rejeitados", "Satisfação", "Tempo Médio"
@@ -49,14 +90,14 @@
 
     private void HandleAddClick()
     {
-        Logger.LogInformation("Add button clicked!");
-        // Implement logic for adding a new employee
+        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
+        NavigationManager.NavigateTo("/employees/add");
     }
 
     private void HandleEditClick(Utilizador utilizador)
     {
-        Logger.LogInformation($"Edit button clicked for: {utilizador.Nome}");
-        // Implement logic for editing an employee
+        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
+        NavigationManager.NavigateTo("/employees/edit");
     }
 
     private async Task HandleRemoveClick(Utilizador utilizador)
