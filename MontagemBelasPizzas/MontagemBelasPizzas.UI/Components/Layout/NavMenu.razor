@@ -7,74 +7,74 @@
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="d-flex flex-column bg-success vh-100" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-grow-1 mt-5">
+    <nav class="flex-grow-1 mt-5 px-3">
         @if (!isAuthenticated)
         {
             <AccessDenied/>
         }
         else if (userRole == "Administrador")
         {
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="admin-home">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToAdminHome">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-house-door me-2"></i>
                     <span>Página Inicial</span>
-                </NavLink>
+                </div>
             </div>
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="admin-products">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToAdminProducts">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-boxes me-2"></i>
                     <span>Produtos</span>
-                </NavLink>
+                </div>
             </div>
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="inventory">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToInventory">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-box-seam me-2"></i>
                     <span>Compras e Vendas</span>
-                </NavLink>
+                </div>
             </div>
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="ingredients">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToIngredients">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-clipboard me-2"></i>
                     <span>Ingredientes</span>
-                </NavLink>
+                </div>
             </div>
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="admins">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToAdmins">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-person-vcard me-2"></i>
                     <span>Administradores</span>
-                </NavLink>
+                </div>
             </div>
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="employees">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToEmployees">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-people me-2"></i>
                     <span>Funcionários</span>
-                </NavLink>
+                </div>
             </div>
-            <div class="nav-item px-3 py-2 mt-4">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="settings">
+            <div class="nav-item px-3 py-2 mt-5" @onclick="NavigateToSettings">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-gear me-2"></i>
                     <span>Definições</span>
-                </NavLink>
+                </div>
             </div>
         }
         else if (userRole == "Funcionario")
         {
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="employee-home">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToEmployeeHome">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-house-door-fill me-2"></i>
                     <span>Página Inicial</span>
-                </NavLink>
+                </div>
             </div>
-            <div class="nav-item px-3 py-1">
-                <NavLink class="nav-link d-flex align-items-center text-light" href="employee-products">
+            <div class="nav-item px-3 py-3" @onclick="NavigateToEmployeeProducts">
+                <div class="d-flex align-items-center text-light" style="cursor: pointer;">
                     <i class="bi bi-box me-2"></i>
                     <span>Produtos</span>
-                </NavLink>
+                </div>
             </div>
         }
     </nav>
     <div class="px-3 py-2 mt-auto">
-        <button class="btn d-flex align-items-center text-light" @onclick="HandleLogout" style="text-align: left;">
+        <button class="btn d-flex align-items-center text-light" @onclick="HandleLogout" style="text-align: left; cursor: pointer;">
             <i class="bi bi-box-arrow-left me-2"></i>
             <span>Logout</span>
         </button>
@@ -114,5 +114,49 @@
 
         NavigationManager.NavigateTo("/", forceLoad: true);
     }
+    
+    private void NavigateToAdminHome()
+    {
+        NavigationManager.NavigateTo("/admin-home");
+    }
 
+    private void NavigateToAdminProducts()
+    {
+        NavigationManager.NavigateTo("/admin-products");
+    }
+
+    private void NavigateToInventory()
+    {
+        NavigationManager.NavigateTo("/inventory");
+    }
+
+    private void NavigateToIngredients()
+    {
+        NavigationManager.NavigateTo("/ingredients");
+    }
+
+    private void NavigateToAdmins()
+    {
+        NavigationManager.NavigateTo("/admins");
+    }
+
+    private void NavigateToEmployees()
+    {
+        NavigationManager.NavigateTo("/employees");
+    }
+
+    private void NavigateToSettings()
+    {
+        NavigationManager.NavigateTo("/settings");
+    }
+
+    private void NavigateToEmployeeHome()
+    {
+        NavigationManager.NavigateTo("/employee-home");
+    }
+
+    private void NavigateToEmployeeProducts()
+    {
+        NavigationManager.NavigateTo("/employee-products");
+    }
 }
