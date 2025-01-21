@@ -45,7 +45,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/login"; // Página de login
+        options.LoginPath = "/"; // Página de login
         options.LogoutPath = "/logout"; // Página de logout
     });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();

@@ -1,5 +1,14 @@
 ﻿@inherits LayoutComponentBase
+@using MontagemBelasPizzas.UI.Components.Pages.Account
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavigationManager
 
+@if (!isAuthenticated)
+{
+    <Login />
+}
+else
+{
     <div class="page">
         <div class="sidebar">
             <NavMenu />
@@ -16,8 +25,33 @@
         </main>
     </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+}
+
+
+@code {
+    private AuthenticationState? authState;
+    private bool isAuthenticated = false;
+    private string? userRole;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                isAuthenticated = true;
+                userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            }
+
+            StateHasChanged();
+        }
+    }
+}

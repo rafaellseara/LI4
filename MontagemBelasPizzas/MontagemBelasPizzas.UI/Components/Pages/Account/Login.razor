@@ -1,4 +1,4 @@
-﻿@page "/login"
+﻿@page "/"
 @using Microsoft.AspNetCore.Components.Authorization
 @using MontagemBelasPizzas.UI.Authentication
 @using MontagemBelasPizzas.Data.Entities.Utilizadores
@@ -39,7 +39,7 @@
             if (matchedUser is not null)
             {
                 await ((CustomAuthenticationStateProvider)AuthProvider).Login(matchedUser);
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo("/admin-home", forceLoad: true);
             }
             else
             {
