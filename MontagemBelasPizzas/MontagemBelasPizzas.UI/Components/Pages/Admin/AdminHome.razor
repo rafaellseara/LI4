@@ -3,8 +3,21 @@
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
 @using MontagemBelasPizzas.UI.Components.Pages.Account
+@using MontagemBelasPizzas.UI.Components.Pages.Account
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavigationManager
 
-<div class="p-8 space-y-6">
+@if (!isAuthenticated)
+{
+    <Login />
+}
+else if (userRole == "Funcionario")
+{
+    <AccessDenied />
+}
+else if (userRole == "Adminstrador")
+{
+    <div class="p-8 space-y-6">
     <!-- Search and Filters -->
     <div class="flex justify-between items-center">
         <!-- Search and Order -->
@@ -92,6 +105,8 @@
         </table>
     </div>
 </div>
+}
+
 
 @code {
     private AuthenticationState? authState;
@@ -114,6 +129,8 @@
             StateHasChanged();
         }
     }
+
+    // What the second fuck is this?
     
     private string SearchTerm { get; set; } = string.Empty;
     private int SelectedSearchColumn { get; set; } = 0;
