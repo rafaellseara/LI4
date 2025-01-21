@@ -7,25 +7,39 @@
 @inject NavigationManager Navigation
 @inject MontagemBelasPizzas.Business.Services.Utilizadores.UtilizadorService UtilizadorService
 
+<div class="d-flex flex-column justify-content-center align-items-center vh-100" style="background-color: #f5f5f5;">
+    <img src="Images/logo/logo.png" alt="Montagem Belas Pizzas Logo" class="mb-4" style="width: 175px;">
 
+    <div class="card shadow" style="width: 525px; height: 500px; border-radius: 15px;">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <h3 style="font-size: 30px; color: #5c251b;" class="mb-4">Sign in</h3>
 
-<h3>Login</h3>
+            <EditForm Model="user" OnValidSubmit="HandleLogin" class="text-center" style="width: 90%;">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-<EditForm Model="user" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+                <div class="form-group mb-3 text-start">
+                    <label for="identificador" style="font-size: 12px; color: #5c251b; margin-left: 5px;" class="form-label">Identificador</label>
+                    <InputNumber id="identificador" class="form-control py-2" @bind-Value="user.Id" style="border: 1px solid #5c251b; border-radius: 15px;" />
+                </div>
 
-    <div>
-        <label>Id:</label>
-        <InputNumber @bind-Value="user.Id" />
+                <div class="form-group mb-4 position-relative text-start">
+                    <label for="senha" style="font-size: 12px; color: #5c251b; margin-left: 5px;" class="form-label">Senha</label>
+                    <InputText id="senha" class="form-control py-2" @bind-Value="user.Senha" InputType="password" style="border: 1px solid #5c251b; border-radius: 15px;" />
+                </div>
+
+                <button type="submit" class="btn w-100" style="background-color: #247031; color: white; border-radius: 30px;">Log in</button>
+            </EditForm>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger mt-3" style="border-radius: 100px;" role="alert">
+                    @errorMessage
+                </div>
+            }
+        </div>
     </div>
-    <div>
-        <label>Password:</label>
-        <InputText @bind-Value="user.Senha" InputType="password" />
-    </div>
-
-    <button type="submit">Login</button>
-</EditForm>
+</div>
 
 @code {
     private Utilizador user = new();
@@ -33,7 +47,7 @@
 
     private async Task HandleLogin()
     {
-        try 
+        try
         {
             var matchedUser = await UtilizadorService.ValidateCredentials(user.Id, user.Senha);
             if (matchedUser is not null)
