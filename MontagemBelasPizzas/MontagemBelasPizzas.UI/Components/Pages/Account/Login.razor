@@ -20,7 +20,7 @@
 
                 <div class="form-group mb-3 text-start">
                     <label for="identificador" style="font-size: 12px; color: #5c251b; margin-left: 5px;" class="form-label">Identificador</label>
-                    <InputNumber id="identificador" class="form-control py-2" @bind-Value="user.Id" style="border: 1px solid #5c251b; border-radius: 15px;" />
+                    <InputText id="identificador" class="form-control py-2" @bind-Value="user_id_string" style="border: 1px solid #5c251b; border-radius: 15px;" />
                 </div>
 
                 <div class="form-group mb-4 position-relative text-start">
@@ -36,21 +36,30 @@
 
 @code {
     private Utilizador user = new();
+    private string? user_id_string;
     private string? errorMessage;
 
     private async Task HandleLogin()
     {
         try
         {
-            var matchedUser = await UtilizadorService.ValidateCredentials(user.Id, user.Senha);
-            if (matchedUser is not null)
+            if (!string.IsNullOrEmpty(user_id_string) && int.TryParse(user_id_string, out int parsedId))
             {
-                await ((CustomAuthenticationStateProvider)AuthProvider).Login(matchedUser);
-                Navigation.NavigateTo("/admin-home", forceLoad: true);
+                user.Id = parsedId;
+                var matchedUser = await UtilizadorService.ValidateCredentials(user.Id, user.Senha);
+                if (matchedUser is not null)
+                {
+                    await ((CustomAuthenticationStateProvider)AuthProvider).Login(matchedUser);
+                    Navigation.NavigateTo("/admin-home", forceLoad: true);
+                }
+                else
+                {
+                    errorMessage = "Credenciais inválidas. Por favor, tente novamente.";
+                }
             }
             else
             {
-                errorMessage = "Credenciais inválidas. Por favor, tente novamente.";
+                errorMessage = "O campo Identificador é inválido ou está vazio.";
             }
         }
         catch (Exception ex)
