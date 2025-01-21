@@ -1,72 +1,112 @@
 ﻿@page "/inventory"
+@using MontagemBelasPizzas.UI.Components.Pages.Account
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavigationManager
 
-<div class="p-8">
-    <h1 class="text-2xl font-bold mb-6">Compras e Vendas</h1>
+@if (!isAuthenticated)
+{
+    <Login />
+}
+else if (userRole == "Funcionario")
+{
+    <AccessDenied />
+}
+else if (userRole == "Adminstrador")
+{
+    <div class="p-8">
+        <h1 class="text-2xl font-bold mb-6">Compras e Vendas</h1>
 
-    <!-- Add File Button -->
-    <div class="flex justify-end mb-4">
-        <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
-            + Adicionar ficheiro
-        </button>
-    </div>
-
-    <!-- Tables Container -->
-    <div class="flex space-x-8">
-        <!-- Latest Purchases Table -->
-        <div class="p-4 border rounded-lg shadow bg-white">
-            <h2 class="text-lg font-semibold mb-4">Últimas Compras</h2>
-            <table class="table-auto w-full border-collapse">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="border px-4 py-2 text-left">Nome</th>
-                        <th class="border px-4 py-2 text-left">ID</th>
-                        <th class="border px-4 py-2 text-left">Quantidade</th>
-                        <th class="border px-4 py-2 text-left">Preço</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var purchase in Purchases)
-                    {
-                        <tr class="hover:bg-gray-100">
-                            <td class="border px-4 py-2">@purchase.Name</td>
-                            <td class="border px-4 py-2">@purchase.Id</td>
-                            <td class="border px-4 py-2">@purchase.Quantity</td>
-                            <td class="border px-4 py-2">@purchase.Price.ToString("C")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <!-- Add File Button -->
+        <div class="flex justify-end mb-4">
+            <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                + Adicionar ficheiro
+            </button>
         </div>
 
-        <!-- Latest Sales Table -->
-        <div class="p-4 border rounded-lg shadow bg-white">
-            <h2 class="text-lg font-semibold mb-4">Últimas Vendas</h2>
-            <table class="table-auto w-full border-collapse">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="border px-4 py-2 text-left">Nome</th>
-                        <th class="border px-4 py-2 text-left">ID</th>
-                        <th class="border px-4 py-2 text-left">Quantidade</th>
-                        <th class="border px-4 py-2 text-left">Preço</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var sale in Sales)
-                    {
-                        <tr class="hover:bg-gray-100">
-                            <td class="border px-4 py-2">@sale.Name</td>
-                            <td class="border px-4 py-2">@sale.Id</td>
-                            <td class="border px-4 py-2">@sale.Quantity</td>
-                            <td class="border px-4 py-2">@sale.Price.ToString("C")</td>
+        <!-- Tables Container -->
+        <div class="flex space-x-8">
+            <!-- Latest Purchases Table -->
+            <div class="p-4 border rounded-lg shadow bg-white">
+                <h2 class="text-lg font-semibold mb-4">Últimas Compras</h2>
+                <table class="table-auto w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border px-4 py-2 text-left">Nome</th>
+                            <th class="border px-4 py-2 text-left">ID</th>
+                            <th class="border px-4 py-2 text-left">Quantidade</th>
+                            <th class="border px-4 py-2 text-left">Preço</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var purchase in Purchases)
+                        {
+                            <tr class="hover:bg-gray-100">
+                                <td class="border px-4 py-2">@purchase.Name</td>
+                                <td class="border px-4 py-2">@purchase.Id</td>
+                                <td class="border px-4 py-2">@purchase.Quantity</td>
+                                <td class="border px-4 py-2">@purchase.Price.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Latest Sales Table -->
+            <div class="p-4 border rounded-lg shadow bg-white">
+                <h2 class="text-lg font-semibold mb-4">Últimas Vendas</h2>
+                <table class="table-auto w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border px-4 py-2 text-left">Nome</th>
+                            <th class="border px-4 py-2 text-left">ID</th>
+                            <th class="border px-4 py-2 text-left">Quantidade</th>
+                            <th class="border px-4 py-2 text-left">Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sale in Sales)
+                        {
+                            <tr class="hover:bg-gray-100">
+                                <td class="border px-4 py-2">@sale.Name</td>
+                                <td class="border px-4 py-2">@sale.Id</td>
+                                <td class="border px-4 py-2">@sale.Quantity</td>
+                                <td class="border px-4 py-2">@sale.Price.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+}
+
 
 @code {
+    // Validate authenticated User
+    private AuthenticationState? authState;
+    private bool isAuthenticated = false;
+    private string? userName;
+    private string? userRole;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                isAuthenticated = true;
+                userName = user.Identity.Name;
+                userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    // what the fuck is this
     private List<Transaction> Purchases = new()
     {
         new Transaction { Name = "Peperoni", Id = 101, Quantity = 251, Price = 322.64m },
