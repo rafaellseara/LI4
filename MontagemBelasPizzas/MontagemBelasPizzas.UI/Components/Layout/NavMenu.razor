@@ -21,7 +21,7 @@
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-<div class="d-flex flex-column vh-100 rounded-r-xl" style="background-color: #006837; width: 16rem;"  onclick="document.querySelector('.navbar-toggler').click()">
+<div class="d-flex flex-column vh-100 position-sticky rounded-r-xl" style="background-color: #006837; width: 16rem; top: 0;" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-grow-1 mt-12 px-3">
         @if (!isAuthenticated)
         {
