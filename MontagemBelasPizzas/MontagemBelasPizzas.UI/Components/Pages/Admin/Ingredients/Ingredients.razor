@@ -1,7 +1,9 @@
 ﻿@page "/ingredients"
 @inject ILogger<Ingredients> Logger
 @inject IngredienteService IngredienteService
+@inject IDialogService DialogService
 @using MontagemBelasPizzas.UI.Components.Pages.Account
+@using MontagemBelasPizzas.UI.Components.Shared
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
 
@@ -76,7 +78,6 @@ else if (userRole == "Administrador")
     </div>
 }
 
-
 @code {
     // Validate authenticated User
     private AuthenticationState? authState;
@@ -133,28 +134,40 @@ else if (userRole == "Administrador")
 
     private void HandleAddClick()
     {
-        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
         NavigationManager.NavigateTo("/ingredients/add");
     }
 
     private void HandleEditClick(Ingrediente ingredient)
     {
-        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
-        NavigationManager.NavigateTo("/ingredients/edit");
+        NavigationManager.NavigateTo($"/ingredients/edit/{ingredient.Id}");
     }
 
     private async Task HandleRemoveClick(Ingrediente ingredient)
     {
-        try
+        var parameters = new DialogParameters
         {
-            await IngredienteService.DeleteIngrediente(ingredient.Id);
-            IngredientsData.Remove(ingredient);
-            Logger.LogInformation($"Removed: {ingredient.Nome}");
-            StateHasChanged();
-        }
-        catch (Exception ex)
+            { "ContentText", $"Tem a certeza que deseja remover o ingrediente {ingredient.Nome}?" },
+            { "ButtonText", "Remover" },
+            { "Color", Color.Error }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
+        var dialog = DialogService.Show<ConfirmationPopUp>("Confirmação", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
         {
-            Logger.LogError(ex, $"Failed to remove ingredient: {ingredient.Nome}");
+            try
+            {
+                await IngredienteService.DeleteIngrediente(ingredient.Id);
+                IngredientsData.Remove(ingredient);
+                Logger.LogInformation($"Removed: {ingredient.Nome}");
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Failed to remove ingredient: {ingredient.Nome}");
+            }
         }
     }
 

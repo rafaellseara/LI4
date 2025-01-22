@@ -1,6 +1,7 @@
 ﻿@page "/admin-products"
 @inject ILogger<Products> Logger
 @inject ProdutoService ProdutoService
+@inject IDialogService DialogService
 @using MontagemBelasPizzas.UI.Components.Shared
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 @inject AuthenticationStateProvider AuthProvider
@@ -90,28 +91,40 @@ else if (userRole == "Administrador")
 
     private void HandleAddClick()
     {
-        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
         NavigationManager.NavigateTo("/admin-products/add");
     }
 
     private void HandleEditClick(Produto produto)
     {
-        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
-        NavigationManager.NavigateTo("/admin-products/edit");
+        NavigationManager.NavigateTo($"/admin-products/edit/{produto.Id}");
     }
 
     private async Task HandleRemoveClick(Produto produto)
     {
-        try
+        var parameters = new DialogParameters
         {
-            await ProdutoService.DeleteProduto(produto.Id);
-            ProductsData.Remove(produto);
-            Logger.LogInformation($"Removed: {produto.Nome}");
-            StateHasChanged();
-        }
-        catch (Exception ex)
+            { "ContentText", $"Tem a certeza que deseja remover o produto {produto.Nome}?" },
+            { "ButtonText", "Remover" },
+            { "Color", Color.Error }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
+        var dialog = DialogService.Show<ConfirmationPopUp>("Confirmação", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
         {
-            Logger.LogError(ex, $"Failed to remove product: {produto.Nome}");
+            try
+            {
+                await ProdutoService.DeleteProduto(produto.Id);
+                ProductsData.Remove(produto);
+                Logger.LogInformation($"Removed: {produto.Nome}");
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Failed to remove product: {produto.Nome}");
+            }
         }
     }
 }

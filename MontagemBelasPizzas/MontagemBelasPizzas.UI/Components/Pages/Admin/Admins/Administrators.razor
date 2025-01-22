@@ -1,6 +1,7 @@
 ﻿@page "/admins"
 @inject ILogger<Administrators> Logger
 @inject UtilizadorService UtilizadorService
+@inject IDialogService DialogService
 @using MontagemBelasPizzas.UI.Components.Shared
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 @inject AuthenticationStateProvider AuthProvider
@@ -83,22 +84,35 @@ else if (userRole == "Administrador")
 
     private void HandleAddClick()
     {
-        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
         NavigationManager.NavigateTo("/admins/add");
     }
 
     private async Task HandleRemoveClick(Utilizador administrador)
     {
-        try
+        var parameters = new DialogParameters
         {
-            await UtilizadorService.DeleteUtilizador(administrador.Id);
-            AdministratorsData.Remove(administrador);
-            Logger.LogInformation($"Removed: {administrador.Nome}");
-            StateHasChanged();
-        }
-        catch (Exception ex)
+            { "ContentText", $"Tem a certeza que deseja remover o administrador {administrador.Nome}?" },
+            { "ButtonText", "Remover" },
+            { "Color", Color.Error }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
+        var dialog = DialogService.Show<ConfirmationPopUp>("Confirmação", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
         {
-            Logger.LogError(ex, $"Failed to remove administrator: {administrador.Nome}");
+            try
+            {
+                await UtilizadorService.DeleteUtilizador(administrador.Id);
+                AdministratorsData.Remove(administrador);
+                Logger.LogInformation($"Removed: {administrador.Nome}");
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Failed to remove administrator: {administrador.Nome}");
+            }
         }
     }
 }
