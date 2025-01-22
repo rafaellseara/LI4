@@ -6,6 +6,7 @@
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
 
 @if (!isAuthenticated)
 {
@@ -102,16 +103,31 @@ else if (userRole == "Administrador")
 
     private async Task HandleRemoveClick(Utilizador utilizador)
     {
-        try
+        var parameters = new DialogParameters
         {
-            await UtilizadorService.DeleteUtilizador(utilizador.Id);
-            FuncionariosData.Remove(utilizador);
-            Logger.LogInformation($"Removed: {utilizador.Nome}");
-            StateHasChanged();
-        }
-        catch (Exception ex)
+            { "ContentText", $"Tem a certeza que deseja remover o funcionário {utilizador.Nome}?" },
+            { "ButtonText", "Remover" },
+            { "Color", Color.Error }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
+        var dialog = DialogService.Show<ConfirmationPopUp>("Confirmação", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
         {
-            Logger.LogError(ex, $"Failed to remove employee: {utilizador.Nome}");
+            try
+            {
+                await UtilizadorService.DeleteUtilizador(utilizador.Id);
+                FuncionariosData.Remove(utilizador);
+                Logger.LogInformation($"Removed: {utilizador.Nome}");
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Failed to remove employee: {utilizador.Nome}");
+            }
         }
     }
+
 }

@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using MontagemBelasPizzas.UI.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using MudBlazor.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,9 @@ builder.Services.AddScoped<MontagemService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<UtilizadorService>();
 
+builder.Services.AddMudServices();
+StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -45,8 +51,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/"; // Página de login
-        options.LogoutPath = "/logout"; // Página de logout
+        options.LoginPath = "/"; // Pï¿½gina de login
+        options.LogoutPath = "/logout"; // Pï¿½gina de logout
     });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<ProtectedLocalStorage>();
