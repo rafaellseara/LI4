@@ -33,6 +33,16 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
             return result;
         }
 
+        public async Task<IEnumerable<Produto>> GetTop3MaisVendidos()
+        {
+            var result = await _db.LoadData<Produto, dynamic>(
+                storedProcedure: "spProduto_GetTop3MaisVendidos",
+                parameters: new { }
+            );
+
+            return result;
+        }
+
         public async Task Insert(Produto produto)
         {
             var parameters = new

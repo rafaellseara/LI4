@@ -36,5 +36,10 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
         {
             await _produtoRepository.Delete(id);
         }
+
+        public async Task<IEnumerable<Produto>> GetTop3MaisVendidos()
+        {
+            return await _produtoRepository.GetTop3MaisVendidos();
+        }
     }
 }

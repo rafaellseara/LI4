@@ -159,6 +159,16 @@ BEGIN
 END;
 GO
 
+-- Procedure para obter os 3 produtos mais vendidos
+CREATE PROCEDURE spProduto_GetTop3MaisVendidos
+AS
+BEGIN
+    SELECT TOP 3 *
+    FROM Produto
+    ORDER BY QuantidadeDeVendas DESC
+END;
+GO
+
 -- Procedure para obter ingrediente por ID
 CREATE PROCEDURE spIngrediente_GetById
     @Id INT
