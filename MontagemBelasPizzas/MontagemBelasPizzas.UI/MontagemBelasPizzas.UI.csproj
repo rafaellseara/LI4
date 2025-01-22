@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Images\NovaPasta\**" />
+    <Content Remove="wwwroot\Images\NovaPasta\**" />
+    <EmbeddedResource Remove="wwwroot\Images\NovaPasta\**" />
+    <None Remove="wwwroot\Images\NovaPasta\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MontagemBelasPizzas.Business\MontagemBelasPizzas.Business.csproj" />
     <ProjectReference Include="..\MontagemBelasPizzas.Data\MontagemBelasPizzas.Data.csproj" />
   </ItemGroup>
