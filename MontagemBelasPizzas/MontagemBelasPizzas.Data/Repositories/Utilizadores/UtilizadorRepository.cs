@@ -57,11 +57,11 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
         {
             var parameters = new
             {
+                utilizador.Id,
                 utilizador.Nome,
                 utilizador.Senha,
                 utilizador.NIF,
                 utilizador.DataDeNascimento,
-                utilizador.DataDeCriacao,
                 utilizador.ImagemURL,
                 utilizador.QuantidadeDeProdutosRealizados,
                 utilizador.QuantidadeDeProdutosRejeitados,

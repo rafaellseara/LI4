@@ -127,11 +127,54 @@ else if (userRole == "Administrador")
         }
     }
 
-    private void HandleEditClick(Utilizador utilizador)
+    private async void HandleEditClick(Utilizador selectedEmployee)
     {
-        // ou vamos para outra pagina ou metemos la em cima um pop up que está invisivel e este metodo ativa-o, escolham
-        NavigationManager.NavigateTo("/employees/edit");
+        // Pass the selected employee's data as parameters to the dialog
+        var parameters = new DialogParameters
+        {
+            { "Employee", selectedEmployee }
+        };
+
+        var options = new DialogOptions { BackgroundClass = "custom-dialog", CloseButton = true, MaxWidth = MaxWidth.Medium };
+
+        var dialog = DialogService.Show<AddEmployee>("Editar Funcionário", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is Utilizador updatedEmployee)
+        {
+            try
+            {
+                Console.WriteLine($"Updated Data: {updatedEmployee.DataDeNascimento}");
+                await UtilizadorService.UpdateUtilizador(updatedEmployee);
+                
+                var index = FuncionariosData.FindIndex(e => e.Id == updatedEmployee.Id);
+                if (index != -1)
+                {
+                    FuncionariosData[index] = updatedEmployee;
+                }
+
+                Logger.LogInformation($"Updated: {updatedEmployee.Nome}");
+
+                Snackbar.Add(
+                    $"Funcionário '{updatedEmployee.Nome}' atualizado com sucesso!",
+                    Severity.Success,
+                    config =>
+                    {
+                        config.ShowCloseIcon = false;
+                        config.SnackbarTypeClass = "snackbar-container custom-snackbar custom-snackbar-success";
+                        config.Icon = Icons.Material.Filled.CheckCircle;
+                    });
+
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to update employee.");
+                Snackbar.Add("Erro ao atualizar funcionário.", Severity.Error);
+            }
+        }
     }
+
 
     private async Task HandleRemoveClick(Utilizador utilizador)
     {
