@@ -1,10 +1,10 @@
-﻿<MudDialog>
+﻿<MudDialog Style="display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 20px;">
     <DialogContent>
-        <MudText Typo="Typo.h6">@ContentText</MudText>
+        <MudText Color="Color.Primary">@ContentText</MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel" Color="Color.Default">Cancelar</MudButton>
-        <MudButton OnClick="Submit" Color="@Color">@ButtonText</MudButton>
+        <MudButton OnClick="Cancel" Color="Color.Primary" Style="border-radius: 20px; padding: 7px">Cancelar</MudButton>
+        <MudButton OnClick="Submit" Color="@Color" Style="border-radius: 20px; padding: 7px">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>
 

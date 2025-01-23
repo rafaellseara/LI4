@@ -13,7 +13,18 @@
     <link href="css/app.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="css/custom.css" rel="stylesheet">
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script>
+        function triggerFileUpload(elementId) {
+            const inputFile = document.getElementById(elementId);
+            if (inputFile) {
+                inputFile.click();
+            } else {
+                console.error(`Elemento com ID '${elementId}' não foi encontrado.`);
+            }
+        }
+    </script>
     <HeadOutlet @rendermode="InteractiveServer"/>
 </head>
 

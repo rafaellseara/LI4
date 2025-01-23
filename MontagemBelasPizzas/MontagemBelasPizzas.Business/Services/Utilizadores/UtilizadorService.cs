@@ -22,11 +22,6 @@ public class UtilizadorService
         return await _utilizadorRepository.GetAll();
     }
 
-    public async Task CreateUtilizador(Utilizador utilizador)
-    {
-        await _utilizadorRepository.Insert(utilizador);
-    }
-
     public async Task UpdateUtilizador(Utilizador utilizador)
     {
         await _utilizadorRepository.Update(utilizador);
@@ -51,6 +46,11 @@ public class UtilizadorService
 
         return null;
     }
-
+    
+    public async Task AddUtilizador(Utilizador utilizador)
+    {
+        utilizador.Tipo = TipoUtilizador.Funcionario;
+        await _utilizadorRepository.Insert(utilizador);
+    }
 }
 

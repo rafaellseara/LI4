@@ -24,6 +24,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Components\Pages\Employee\Production\" />
+	  <Folder Include="wwwroot\Images\perfil\" />
 	</ItemGroup>
 
 	<ItemGroup>

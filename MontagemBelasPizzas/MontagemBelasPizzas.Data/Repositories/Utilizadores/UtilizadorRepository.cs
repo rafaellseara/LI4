@@ -43,13 +43,8 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
                 utilizador.Senha,
                 utilizador.NIF,
                 utilizador.DataDeNascimento,
-                utilizador.DataDeCriacao,
                 utilizador.ImagemURL,
-                utilizador.QuantidadeDeProdutosRealizados,
-                utilizador.QuantidadeDeProdutosRejeitados,
-                utilizador.MediaDeSatisfacao,
-                utilizador.TempoMedioPorProduto,
-                utilizador.Tipo
+                Tipo = utilizador.Tipo.ToString()
             };
 
             await _db.SaveData(

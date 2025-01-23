@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using MontagemBelasPizzas.UI.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using MudBlazor;
 using MudBlazor.Services;
 
 
@@ -37,7 +38,18 @@ builder.Services.AddScoped<MontagemService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<UtilizadorService>();
 
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = false;
+    config.SnackbarConfiguration.ShowCloseIcon = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 2000;
+    config.SnackbarConfiguration.HideTransitionDuration = 150;
+    config.SnackbarConfiguration.ShowTransitionDuration = 150;
+    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+});
+
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 // Add services to the container.

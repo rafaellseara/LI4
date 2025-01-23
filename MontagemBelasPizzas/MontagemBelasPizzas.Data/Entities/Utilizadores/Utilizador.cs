@@ -6,7 +6,7 @@
         public string Nome { get; set; } // Nome do utilizador
         public string Senha { get; set; } // Hash da senha do utilizador
         public string NIF { get; set; } // Número único de 9 dígitos
-        public DateTime DataDeNascimento { get; set; } // Data de nascimento
+        public DateTime? DataDeNascimento { get; set; } // Data de nascimento
         public DateTime DataDeCriacao { get; set; } // Data de criação do registo
         public string? ImagemURL { get; set; } // Caminho ou URL da imagem (opcional)
         public int QuantidadeDeProdutosRealizados { get; set; } // Número inteiro não negativo
