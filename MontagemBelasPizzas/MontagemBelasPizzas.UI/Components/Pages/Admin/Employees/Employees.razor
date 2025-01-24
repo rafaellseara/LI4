@@ -105,7 +105,11 @@ else if (userRole == "Administrador")
                 Console.WriteLine($"Data: {newEmployee.DataDeNascimento}");
                 await UtilizadorService.AddUtilizador(newEmployee);
                 
-                FuncionariosData.Add(newEmployee);
+                var allUtilizadores = await UtilizadorService.GetAllUtilizadores();
+                FuncionariosData = allUtilizadores
+                    .Where(u => u.Tipo == TipoUtilizador.Funcionario)
+                    .ToList();
+
                 Logger.LogInformation($"Added: {newEmployee.Nome}");
                 
                 Snackbar.Add(

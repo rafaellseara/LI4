@@ -2,6 +2,7 @@
 @inject ILogger<Ingredients> Logger
 @inject IngredienteService IngredienteService
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 @using MontagemBelasPizzas.UI.Components.Shared
 @inject AuthenticationStateProvider AuthProvider
@@ -132,15 +133,91 @@ else if (userRole == "Administrador")
         .Where(i => SearchTerm == string.Empty || MatchesSearchTerm(i))
         .OrderBy(i => SelectedOrderColumn >= 0 ? GetPropertyValue(i, SelectedOrderColumn) : null);
 
-    private void HandleAddClick()
+    private async void HandleAddClick()
     {
-        NavigationManager.NavigateTo("/ingredients/add");
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { BackgroundClass = "custom-dialog", CloseButton = true, MaxWidth = MaxWidth.Medium };
+
+        var dialog = DialogService.Show<AddIngredient>("Adicionar Ingrediente", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is Ingrediente newIngredient)
+        {
+            try
+            {
+                newIngredient.IdAdministrador = 1;
+                await IngredienteService.CreateIngrediente(newIngredient);
+
+                var allIngredientes = await IngredienteService.GetAllIngredientes();
+                IngredientsData = allIngredientes.ToList();
+                
+                Logger.LogInformation($"Added: {newIngredient.Nome}");
+
+                Snackbar.Add(
+                    $"Ingrediente '{newIngredient.Nome}' adicionado com sucesso!",
+                    Severity.Success,
+                    config =>
+                    {
+                        config.ShowCloseIcon = false;
+                        config.SnackbarTypeClass = "snackbar-container custom-snackbar custom-snackbar-success";
+                        config.Icon = Icons.Material.Filled.CheckCircle;
+                    });
+
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to add ingredient.");
+            }
+        }
     }
 
-    private void HandleEditClick(Ingrediente ingredient)
+    private async void HandleEditClick(Ingrediente selectedIngredient)
     {
-        NavigationManager.NavigateTo($"/ingredients/edit/{ingredient.Id}");
+        var parameters = new DialogParameters
+        {
+            { "Ingredient", selectedIngredient }
+        };
+
+        var options = new DialogOptions { BackgroundClass = "custom-dialog", CloseButton = true, MaxWidth = MaxWidth.Medium };
+
+        var dialog = DialogService.Show<AddIngredient>("Editar Ingrediente", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is Ingrediente updatedIngredient)
+        {
+            try
+            {
+                await IngredienteService.UpdateIngrediente(updatedIngredient);
+
+                // Update the ingredient in the IngredientsData list
+                var index = IngredientsData.FindIndex(i => i.Id == updatedIngredient.Id);
+                if (index != -1)
+                {
+                    IngredientsData[index] = updatedIngredient;
+                }
+
+                Logger.LogInformation($"Updated: {updatedIngredient.Nome}");
+
+                Snackbar.Add(
+                    $"Ingrediente '{updatedIngredient.Nome}' atualizado com sucesso!",
+                    Severity.Success,
+                    config =>
+                    {
+                        config.ShowCloseIcon = false;
+                        config.SnackbarTypeClass = "snackbar-container custom-snackbar custom-snackbar-success";
+                        config.Icon = Icons.Material.Filled.CheckCircle;
+                    });
+
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to update ingredient.");
+            }
+        }
     }
+
 
     private async Task HandleRemoveClick(Ingrediente ingredient)
     {
