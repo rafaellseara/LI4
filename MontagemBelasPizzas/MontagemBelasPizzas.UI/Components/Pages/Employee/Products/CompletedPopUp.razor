@@ -1,5 +1,24 @@
-﻿<h3>CompletedPopUp</h3>
+﻿<MudDialog MaxWidth="MaxWidth.Medium" Style="width: 500px; border-radius: 20px;">
+    <DialogContent>
+        <div class="text-center p-6">
+            <MudText Typo="Typo.h5" Class="mb-4">Pizza Concluída</MudText>
+
+            <div class="my-4">
+                <MudRating MaxValue="5" SelectedValue="5" ReadOnly="true" Size="Size.Large" Color="Color.Primary" />
+            </div>
+
+            <div class="my-4">
+                <img src="Images/logo/logo.svg" alt="Pizza Concluída" class="rounded-full" style="width: 150px; height: 150px; object-fit: cover; margin: auto;" />
+            </div>
+        </div>
+    </DialogContent>
+</MudDialog>
 
 @code {
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
 
+    private void Confirmar()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
 }
