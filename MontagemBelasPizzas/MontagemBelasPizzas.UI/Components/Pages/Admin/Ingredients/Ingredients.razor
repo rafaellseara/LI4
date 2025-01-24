@@ -3,6 +3,7 @@
 @inject IngredienteService IngredienteService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@using System.Security.Claims
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 @using MontagemBelasPizzas.UI.Components.Shared
 @inject AuthenticationStateProvider AuthProvider
@@ -85,6 +86,7 @@ else if (userRole == "Administrador")
     private bool isAuthenticated = false;
     private string? userName;
     private string? userRole;
+    private int userId;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -98,6 +100,7 @@ else if (userRole == "Administrador")
                 isAuthenticated = true;
                 userName = user.Identity.Name;
                 userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+                userId = int.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "1");
             }
 
             StateHasChanged();
@@ -145,7 +148,7 @@ else if (userRole == "Administrador")
         {
             try
             {
-                newIngredient.IdAdministrador = 1;
+                newIngredient.IdAdministrador = userId;
                 await IngredienteService.CreateIngrediente(newIngredient);
 
                 var allIngredientes = await IngredienteService.GetAllIngredientes();

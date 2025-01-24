@@ -1,11 +1,14 @@
 ﻿@page "/admin-products"
 @inject ILogger<Products> Logger
 @inject ProdutoService ProdutoService
+@inject MontagemService MontagemService
 @inject IDialogService DialogService
 @using MontagemBelasPizzas.UI.Components.Shared
+@using System.Security.Claims
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
 
 @if (!isAuthenticated)
@@ -35,6 +38,7 @@ else if (userRole == "Administrador")
     private bool isAuthenticated = false;
     private string? userName;
     private string? userRole;
+    private int userId;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -48,6 +52,7 @@ else if (userRole == "Administrador")
                 isAuthenticated = true;
                 userName = user.Identity.Name;
                 userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+                userId = int.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "1");
             }
 
             StateHasChanged();
@@ -89,15 +94,142 @@ else if (userRole == "Administrador")
         }
     }
 
-    private void HandleAddClick()
+    private async void HandleAddClick()
     {
-        NavigationManager.NavigateTo("/admin-products/add");
+        var parameters = new DialogParameters
+        {
+            { "Product", new Produto() }
+        };
+
+        var options = new DialogOptions
+        {
+            BackgroundClass = "custom-dialog",
+            CloseButton = true,
+            MaxWidth = MaxWidth.Medium
+        };
+
+        var dialog = DialogService.Show<AddProducts>("Adicionar Produto", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is not null)
+        {
+            try
+            {
+                var productData = (dynamic)result.Data;
+                var newProduct = productData.Product as Produto;
+                var montagens = productData.SelectedMontagens as List<Montagem>;
+
+                if (newProduct != null)
+                {
+                    newProduct.IdAdministrador = userId;
+                    await ProdutoService.CreateProduto(newProduct);
+                    
+                    var savedProduct = (await ProdutoService.GetAllProdutos())
+                        .FirstOrDefault(p => p.Nome == newProduct.Nome && p.Categoria == newProduct.Categoria);
+
+                    if (savedProduct != null && montagens != null)
+                    {
+                        // Save the montagens with the product's ID
+                        foreach (var montagem in montagens)
+                        {
+                            montagem.IdProduto = savedProduct.Id;
+                            await MontagemService.CreateMontagem(montagem);
+                        }
+                    }
+
+                    // Reload all products after successful addition
+                    var produtos = await ProdutoService.GetAllProdutos();
+                    ProductsData = produtos.ToList();
+
+                    StateHasChanged();
+
+                    Snackbar.Add("Produto e montagem adicionados com sucesso!", Severity.Success);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Erro ao adicionar produto e montagem.");
+                Snackbar.Add("Erro ao adicionar produto e montagem.", Severity.Error);
+            }
+        }
+
     }
 
-    private void HandleEditClick(Produto produto)
+
+    private async void HandleEditClick(Produto produto)
+{
+    // Retrieve the current montagens associated with the product
+    var montagens = (await MontagemService.GetMontagensByProdutoId(produto.Id)).ToList();
+    
+    foreach (var montagem in montagens)
     {
-        NavigationManager.NavigateTo($"/admin-products/edit/{produto.Id}");
+        Logger.LogInformation(montagem.ToString());
     }
+
+    // Pass the product and its montagens to the edit dialog
+    var parameters = new DialogParameters
+    {
+        { "Product", produto },
+        { "SelectedMontagens", montagens }
+    };
+
+    var options = new DialogOptions
+    {
+        BackgroundClass = "custom-dialog",
+        CloseButton = true,
+        MaxWidth = MaxWidth.Medium
+    };
+
+    var dialog = DialogService.Show<AddProducts>("Editar Produto", parameters, options);
+    var result = await dialog.Result;
+
+    if (!result.Canceled && result.Data is not null)
+    {
+        try
+        {
+            var productData = (dynamic)result.Data;
+            var updatedProduct = productData.Product as Produto;
+            var updatedMontagens = productData.SelectedMontagens as List<Montagem>;
+
+            if (updatedProduct != null)
+            {
+                updatedProduct.IdAdministrador = userId;
+                await ProdutoService.UpdateProduto(updatedProduct);
+
+                // Remove existing montagens for the product
+                var existingMontagens = await MontagemService.GetMontagensByProdutoId(updatedProduct.Id);
+                foreach (var montagem in existingMontagens)
+                {
+                    await MontagemService.DeleteMontagem(montagem.Id);
+                }
+
+                // Add updated montagens
+                if (updatedMontagens != null)
+                {
+                    foreach (var mon in updatedMontagens)
+                    {
+                        mon.IdProduto = updatedProduct.Id;
+                        await MontagemService.CreateMontagem(mon);
+                    }
+                }
+
+                // Reload all products after successful update
+                var produtos = await ProdutoService.GetAllProdutos();
+                ProductsData = produtos.ToList();
+
+                StateHasChanged();
+
+                Snackbar.Add("Produto e montagem atualizados com sucesso!", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Erro ao atualizar produto e montagem.");
+            Snackbar.Add("Erro ao atualizar produto e montagem.", Severity.Error);
+        }
+    }
+}
+
 
     private async Task HandleRemoveClick(Produto produto)
     {
