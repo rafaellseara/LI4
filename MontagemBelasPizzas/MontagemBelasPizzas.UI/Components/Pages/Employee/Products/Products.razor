@@ -1,8 +1,12 @@
 ﻿@page "/employee-products"
 @using MontagemBelasPizzas.Data.Entities.Produtos
 @using MontagemBelasPizzas.UI.Components.Shared
+@using MontagemBelasPizzas.UI.Components.Pages.Employee.Products
 @inject IDialogService DialogService
 @inject ProdutoService ProdutoService
+@inject MontagemService MontagemService
+@inject IngredienteService IngredienteService
+
 
 <div class="mx-15 p-8">
 
@@ -68,7 +72,6 @@
     </div>
 </div>
 
-
 @code {
     private List<Produto> ProductsData = new();
     private List<Produto> TopProdutos = new();
@@ -94,27 +97,42 @@
             var topprodutos = await ProdutoService.GetTop3MaisVendidos();
             TopProdutos = topprodutos.ToList();
         }
-        catch (Exception ex)
+        catch
         {
         }
     }
 
     private async Task OpenConfirmationDialog(Produto produto)
     {
-        var parameters = new DialogParameters
+        try
         {
-            { "ContentText", $"Deseja iniciar a montagem para a {produto.Nome}?" },
-            { "ButtonText", "Iniciar Montagem" },
-            { "Color", Color.Error }
-        };
+            var montagens = await MontagemService.GetMontagensByProdutoId(produto.Id);
+            var listaIngredientes = new List<Ingrediente>();
 
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
-        var dialog = DialogService.Show<ConfirmationPopUp>("Confirmação", parameters, options);
-        var result = await dialog.Result;
+            foreach (var montagem in montagens)
+            {
+                var ingrediente = await IngredienteService.GetIngredienteById(montagem.IdIngrediente);
+                if (ingrediente != null)
+                {
+                    listaIngredientes.Add(ingrediente);
+                }
+            }
 
-        if (!result.Canceled)
+            var parameters = new DialogParameters
+            {
+                { "Produto", produto },
+                { "Ingredientes", listaIngredientes }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium };
+            var dialog = await DialogService.ShowAsync<IngredientsPopUp>(produto.Nome, parameters, options);
+            var result = dialog.Result;
+        }
+        catch (Exception ex)
         {
-            // Ir para a pagina de montagem
+            Console.WriteLine($"Erro ao abrir o popup para {produto.Nome}: {ex.Message}");
         }
     }
+
+
 }

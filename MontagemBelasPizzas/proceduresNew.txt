@@ -291,6 +291,23 @@ BEGIN
 END;
 GO
 
+-- Procedure para obter todas as montagens de um produto específico
+CREATE PROCEDURE spMontagem_GetByProdutoId
+    @IdProduto INT
+AS
+BEGIN
+    SELECT 
+        Id AS MontagemId,
+        IdIngrediente,
+        IdProduto,
+        Ordem,
+        Descricao
+    FROM Montagem
+    WHERE IdProduto = @IdProduto
+    ORDER BY Ordem; -- Ordenar pelo número da ordem
+END;
+GO
+
 -- Procedure para apagar montagem
 CREATE PROCEDURE spMontagem_Delete
     @Id INT
