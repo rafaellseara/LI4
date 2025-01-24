@@ -6,6 +6,7 @@
 @inject ProdutoService ProdutoService
 @inject MontagemService MontagemService
 @inject IngredienteService IngredienteService
+@inject NavigationManager NavigationManager
 
 
 <div class="mx-15 p-8">
@@ -126,7 +127,12 @@
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium };
             var dialog = await DialogService.ShowAsync<IngredientsPopUp>(produto.Nome, parameters, options);
-            var result = dialog.Result;
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                NavigationManager.NavigateTo($"/assembly-line?produtoId={produto.Id}");
+            }
         }
         catch (Exception ex)
         {
