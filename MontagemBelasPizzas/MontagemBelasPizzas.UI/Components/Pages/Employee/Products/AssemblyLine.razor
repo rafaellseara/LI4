@@ -134,12 +134,13 @@
         var parameters = new DialogParameters
     {
         { "Title", "Pizza Concluída" },
-        { "ImageURL", "/images/pizza_logo.png" }, // Substitua pelo caminho real da sua imagem
+        { "ImageURL", "Images/logo/logo.png" }, 
         { "Rating", 5 },
-        { "ReturnText", "Voltar para a Linha de Montagem" }
+        { "ReturnText", "Voltar para a Linha de Montagem" },
+        { "ReturnURL", "/employee-products" }
     };
 
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium };
         var dialog = DialogService.Show<CompletedPopUp>("", parameters, options);
         var result = await dialog.Result;
 
@@ -148,6 +149,7 @@
             NavigationManager.NavigateTo("/employee-products");
         }
     }
+
 
 
     public class MontagemComIngrediente
