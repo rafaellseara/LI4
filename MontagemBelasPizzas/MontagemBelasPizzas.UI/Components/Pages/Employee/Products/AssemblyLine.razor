@@ -7,16 +7,22 @@
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 
-<h1 class="fs-4 fw-bold mb-15 ml-2 mt-2">@Produto?.Nome</h1>
+<div class="px-4 py-2 fs-4 fw-bold mb-15 ml-2 mt-2" style="background-color: #FFFFFF; display: inline-block; border-radius: 15px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); width: 50%;">
+    <h1 class="fw-bold" style="color: #6c3e2c; font-family: 'Poppins', sans-serif; font-size: 1.2rem; margin: 0;">
+        @Produto?.Nome
+    </h1>
+</div>
+
 <div class="mx-auto p-4 bg-white" style="width: 1000px; height: 600px; border-radius: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; position: relative;">
-    <h1 class="fs-2 fw-bold ml-12">Montagem:</h1>
+    <h1 class="fs-2 fw-bold ml-12" style="color: #6c3e2c;">Montagem:</h1>
     <hr class="my-4" style="border: 1px solid #ccc; width: 90%; margin: auto;" />
 
     <div class="position-relative flex-1">
         @if (MontagensComIngredientes != null && MontagensComIngredientes.Any())
         {
-            <div class="position-absolute">
-                <h2 class="ml-12 text-xl mb-6">
+            <div class="position-absolute px-4 py-2 ml-12"
+                 style="background-color: #FFFFFF; border-radius: 20px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); width: 90%;">
+                <h2 style="color: #6c3e2c; font-family: 'Poppins', sans-serif; font-size: 1rem; margin: 0; font-weight: 500; white-space: nowrap;">
                     Passo @MontagensComIngredientes[CurrentIndex].Ordem - @MontagensComIngredientes[CurrentIndex].Descricao
                 </h2>
             </div>
