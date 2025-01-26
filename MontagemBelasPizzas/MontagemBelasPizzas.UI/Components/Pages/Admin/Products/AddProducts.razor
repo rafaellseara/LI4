@@ -89,10 +89,12 @@
                     <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4" Color="Color.Primary">Descrição</MudText>
                     <MudTextField @bind-Value="NewMontagemDescricao" Variant="Variant.Outlined"
                                   Style="background-color: #ffffff; border-radius: 20px;"/>
-                    <MudButton OnClick="AddMontagem" Color="Color.Tertiary" Typo="Typo.caption" 
-                               Class="px-4 mt-8" Style="background-color: #FC5825;">
-                        + Adicionar Passo
-                    </MudButton>
+                    <div class="d-flex justify-content-end">
+                        <MudButton OnClick="AddMontagem" Color="Color.Tertiary" Typo="Typo.caption" 
+                                   Class="px-4 mt-8" Style="background-color: #FC5825;">
+                            + Adicionar Passo
+                        </MudButton>
+                    </div>
                 }
                 <div class="mt-12">
                     <MudButton OnClick="Confirm" Color="Color.Primary" Typo="Typo.caption"
