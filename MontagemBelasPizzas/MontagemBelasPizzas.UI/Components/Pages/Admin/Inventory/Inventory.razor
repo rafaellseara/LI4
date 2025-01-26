@@ -29,67 +29,68 @@ else if (userRole == "Funcionario")
 }
 else if (userRole == "Administrador")
 {
-    <div class="p-8">
-        <h1 class="text-2xl font-bold mb-6">Compras e Vendas</h1>
-
-        <!-- Add File Button -->
-        <div class="flex justify-end mb-4">
-            <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
-                    @onclick="() => ShowCard = true">
-                + Adicionar ficheiro
-            </button>
+    <div class="p-8" style="margin-top: 6rem">
+        <div class="flex justify-between">
+            <div class="fs-3" style="font-weight: 900; color: #7B351C">Compras e Vendas</div>
+            <!-- Add File Button -->
+            <div class="flex justify-end mb-4">
+                <button class="text-white px-6 py-2 shadow rounded" style="background-color: #FC5825"
+                        @onclick="() => ShowCard = true">
+                    + Adicionar ficheiro
+                </button>
+            </div>
         </div>
 
         <!-- Tables Container -->
-        <div class="flex space-x-8">
+        <div class="flex justify-between mt-2">
             <!-- Latest Purchases Table -->
-            <div class="p-4 border rounded-lg shadow bg-white">
-                <h2 class="text-lg font-semibold mb-4">Últimas Compras</h2>
+            <div class="flex-1 p-4 mr-2 border shadow bg-white" style="border-radius: 20px">
+                <h2 class="text-lg font-semibold mb-4" style="color: #7B351C;">Últimas Compras</h2>
                 <table class="table-auto w-full border-collapse">
                     <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border px-4 py-2 text-left">Nome</th>
-                            <th class="border px-4 py-2 text-left">ID</th>
-                            <th class="border px-4 py-2 text-left">Quantidade</th>
-                            <th class="border px-4 py-2 text-left">Preço</th>
-                        </tr>
+                    <tr class="border-t">
+                        <th class=" px-4 py-4 text-left" style="color: #7B351C">Nome</th>
+                        <th class="px-4 py-4 text-left" style="color: #7B351C">ID</th>
+                        <th class="px-4 py-4 text-left" style="color: #7B351C">Quantidade</th>
+                        <th class="px-4 py-4 text-left" style="color: #7B351C">Preço</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach (var purchase in Purchases)
-                        {
-                            <tr class="hover:bg-gray-100">
-                                <td class="border px-4 py-2">@purchase.IdIngrediente</td>
-                                <td class="border px-4 py-2">@purchase.Id</td>
-                                <td class="border px-4 py-2">@purchase.Quantidade</td>
-                                <td class="border px-4 py-2">@purchase.ValorTotal.ToString("C")</td>
-                            </tr>
-                        }
+                    @foreach (var purchase in Purchases)
+                    {
+                        <tr class="border-t">
+                            <td class="px-4 py-4" style="color: #7B351C">@purchase.IdIngrediente</td>
+                            <td class="px-4 py-4" style="color: #7B351C">@purchase.Id</td>
+                            <td class="px-4 py-4" style="color: #7B351C">@purchase.Quantidade</td>
+                            <td class="px-4 py-4" style="color: #7B351C">@purchase.ValorTotal.ToString("C")</td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             </div>
 
             <!-- Latest Sales Table -->
-            <div class="p-4 border rounded-lg shadow bg-white">
-                <h2 class="text-lg font-semibold mb-4">Últimas Vendas</h2>
+            <div class="flex-1 p-4 ml-2 border shadow bg-white" style="border-radius: 20px">
+                <h2 class="text-lg font-semibold mb-4" style="color: #7B351C">Últimas Vendas</h2>
                 <table class="table-auto w-full border-collapse">
                     <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border px-4 py-2 text-left">Nome</th>
-                            <th class="border px-4 py-2 text-left">ID</th>
-                            <th class="border px-4 py-2 text-left">Quantidade</th>
-                            <th class="border px-4 py-2 text-left">Preço</th>
-                        </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-4 text-left" style="color: #7B351C">Nome</th>
+                        <th class="px-4 py-4 text-left" style="color: #7B351C">ID</th>
+                        <th class="px-4 py-4 text-left" style="color: #7B351C">Quantidade</th>
+                        <th class="px-4 py-4 text-left" style="color: #7B351C">Preço</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach (var sale in Sales)
-                        {
-                            <tr class="hover:bg-gray-100">
-                                <td class="border px-4 py-2">@sale.IdProduto</td>
-                                <td class="border px-4 py-2">@sale.Id</td>
-                                <td class="border px-4 py-2">@sale.Quantidade</td>
-                                <td class="border px-4 py-2">@sale.ValorTotal.ToString("C")</td>
-                            </tr>
-                        }
+                    @foreach (var sale in Sales)
+                    {
+                        <tr class="border-t">
+                            <td class="px-4 py-4" style="color: #7B351C">@sale.IdProduto</td>
+                            <td class="px-4 py-4" style="color: #7B351C">@sale.Id</td>
+                            <td class="px-4 py-4" style="color: #7B351C">@sale.Quantidade</td>
+                            <td class="px-4 py-4" style="color: #7B351C">@sale.ValorTotal.ToString("C")</td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             </div>
@@ -100,7 +101,7 @@ else if (userRole == "Administrador")
     @if (ShowCard)
     {
         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="relative bg-white p-8 rounded-lg shadow-lg w-96">
+            <div class="relative bg-white p-8 rounded-lg shadow-lg" style="width: 500px">
                 <!-- Botão Fechar com ícone do Bootstrap -->
                 <button class="btn-close position-absolute top-0 end-0 m-3" @onclick="() => ShowCard = false" aria-label="Close"></button>
 

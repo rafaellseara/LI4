@@ -23,91 +23,93 @@ else if (userRole == "Funcionario")
 }
 else if (userRole == "Administrador")
 {
-    <div class="flex items-center space-x-2 mb-6">
-        <!-- Search -->
-        <div class="flex bg-white rounded-full shadow-md px-4 py-2 w-1/2 justify-between">
-            <div class="flex-column align-content-lg-center">
-                <i class="bi bi-search text-brown-500 mr-2" style="color: #7B351C;"></i>
-                <input type="text" placeholder="Pesquisar" class="outline-none" 
-                       style="width: 300px; color: #7B351C;" @bind="SearchTerm" @bind:event="oninput"/>
+    <div class="p-6">
+        <div class="flex items-center space-x-2 mb-6 mt-4">
+            <!-- Search -->
+            <div class="flex bg-white rounded-full shadow-md px-4 py-2 w-1/2 justify-between">
+                <div class="flex-column align-content-lg-center">
+                    <i class="bi bi-search text-brown-500 mr-2" style="color: #7B351C;"></i>
+                    <input type="text" placeholder="Pesquisar" class="outline-none"
+                           style="width: 300px; color: #7B351C;" @bind="SearchTerm" @bind:event="oninput"/>
+                </div>
+                <select class="outline-none" style="color: #7B351C;" @bind="SelectedSearchColumn">
+                    @for (var i = 0; i < ColumnHeaders.Count; i++)
+                    {
+                        <option value="@i">@ColumnHeaders[i]</option>
+                    }
+                </select>
             </div>
-            <select class="outline-none" style="color: #7B351C;" @bind="SelectedSearchColumn">
-                @for (var i = 0; i < ColumnHeaders.Count; i++)
-                {
-                    <option value="@i">@ColumnHeaders[i]</option>
-                }
-            </select>
+            <!-- Order Dropdown -->
+            <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2">
+                <i class="bi bi-sort-down text-brown-500 mr-2" style="color: #7B351C;"></i>
+                <select class="bg-transparent text-brown-500 outline-none cursor-pointer" style="color: #7B351C;" @bind="SelectedOrderColumn">
+                    <option value="">Ordenar por...</option>
+                    @for (var i = 0; i < ColumnHeaders.Count; i++)
+                    {
+                        <option value="@i">@ColumnHeaders[i]</option>
+                    }
+                </select>
+            </div>
         </div>
-        <!-- Order Dropdown -->
-        <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2">
-            <i class="bi bi-sort-down text-brown-500 mr-2" style="color: #7B351C;"></i>
-            <select class="bg-transparent text-brown-500 outline-none cursor-pointer" style="color: #7B351C;" @bind="SelectedOrderColumn">
-                <option value="">Ordenar por...</option>
-                @for (var i = 0; i < ColumnHeaders.Count; i++)
-                {
-                    <option value="@i">@ColumnHeaders[i]</option>
-                }
-            </select>
+
+        <!-- Metrics Section -->
+        <div class="flex justify-center mt-16 space-x-5">
+            <div class="text-white text-center p-1 shadow" style="background-color: #FC5825; border-radius: 20px; width: 300px">
+                <div class="font-bold">Custo Total:</div>
+                <div>@TotalCost.ToString("C")</div>
+            </div>
+            <div class="text-white text-center p-1 mx-5 shadow" style="background-color: #7FA979; border-radius: 20px; width: 300px">
+                <div class="font-bold">Receita Total:</div>
+                <div>@TotalRevenue.ToString("C")</div>
+            </div>
+            <div class="text-white text-center p-1 shadow" style="background-color: #FFB253; border-radius: 20px; width: 300px">
+                <div class="font-bold">Margem de Lucro:</div>
+                <div>@ProfitMargin.ToString("C")</div>
+            </div>
         </div>
-    </div>
-    
-    <!-- Metrics Section -->
-    <div class="flex justify-between space-x-4">
-        <div class="bg-orange-500 text-white p-4 rounded-lg flex-1 text-center">
-            <p class="font-bold text-lg">Custo Total:</p>
-            <p class="text-2xl">@TotalCost.ToString("C")</p>
-        </div>
-        <div class="bg-green-500 text-white p-4 rounded-lg flex-1 text-center">
-            <p class="font-bold text-lg">Receita Total:</p>
-            <p class="text-2xl">@TotalRevenue.ToString("C")</p>
-        </div>
-        <div class="bg-yellow-500 text-white p-4 rounded-lg flex-1 text-center">
-            <p class="font-bold text-lg">Margem de Lucro:</p>
-            <p class="text-2xl">@ProfitMargin.ToString("C")</p>
-        </div>
-    </div>
 
 
-    <!-- Graphs Section -->
-    <div class="flex space-x-6">
-        <div class="flex-1 p-4 bg-white border rounded-lg shadow">
-            <h2 class="text-lg font-semibold mb-4">Histórico de Vendas</h2>
-            <ChartComponent Data="@SalesData"/>
+        <!-- Graphs Section -->
+        <div class="flex space-x-6 mt-12">
+            <div class="flex-1 p-4 bg-white border shadow" style="border-radius: 20px">
+                <h2 class="text-lg font-semibold mb-4" style="color: #7B351C">Histórico de Vendas</h2>
+                <ChartComponent Data="@SalesData"/>
+            </div>
+            <div class="flex-1 p-4 bg-white border shadow" style="border-radius: 20px">
+                <h2 class="text-lg font-semibold mb-4" style="color: #7B351C">Produtos Mais Vendidos</h2>
+                <BarChartComponent Data="@TopProducts"/>
+            </div>
         </div>
-        <div class="flex-1 p-4 bg-white border rounded-lg shadow">
-            <h2 class="text-lg font-semibold mb-4">Produtos Mais Vendidos</h2>
-            <BarChartComponent Data="@TopProducts"/>
-        </div>
-    </div>
 
-    <!-- History Table -->
-    <div class="p-4 bg-white border rounded-lg shadow">
-        <h2 class="text-lg font-semibold mb-4">Histórico</h2>
-        <table class="table-auto w-full border-collapse">
-            <thead>
-            <tr class="bg-gray-200">
-                <th class="border px-4 py-2">Tipo</th>
-                <th class="border px-4 py-2">Nome</th>
-                <th class="border px-4 py-2">ID</th>
-                <th class="border px-4 py-2">Data</th>
-                <th class="border px-4 py-2">Quantidade</th>
-                <th class="border px-4 py-2">Preço</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var record in FilteredHistory)
-            {
-                <tr class="hover:bg-gray-100">
-                    <td class="border px-4 py-2">@record.Type</td>
-                    <td class="border px-4 py-2">@record.Name</td>
-                    <td class="border px-4 py-2">@record.Id</td>
-                    <td class="border px-4 py-2">@record.Date.ToString("dd/MM/yyyy")</td>
-                    <td class="border px-4 py-2">@record.Quantity</td>
-                    <td class="border px-4 py-2">@record.Price.ToString("C")</td>
+        <!-- History Table -->
+        <div class="p-4 bg-white border shadow mt-12" style="border-radius: 20px">
+            <div class="mb-4 fs-3" style="font-weight: 900; color: #7B351C">Histórico</div>
+            <table class="table-auto w-full">
+                <thead>
+                <tr class=" border-t py-4">
+                    <th class="px-4 py-4" style="color: #7B351C">Tipo</th>
+                    <th class="px-4 py-4" style="color: #7B351C">Nome</th>
+                    <th class="px-4 py-4" style="color: #7B351C">ID</th>
+                    <th class="px-4 py-4" style="color: #7B351C">Data</th>
+                    <th class="px-4 py-4" style="color: #7B351C">Quantidade</th>
+                    <th class="px-4 py-4" style="color: #7B351C">Preço</th>
                 </tr>
-            }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @foreach (var record in FilteredHistory)
+                {
+                    <tr class="border-t py-4">
+                        <td class="px-4 py-4" style="color: #7B351C">@record.Type</td>
+                        <td class="px-4 py-4" style="color: #7B351C">@record.Name</td>
+                        <td class="px-4 py-4" style="color: #7B351C">@record.Id</td>
+                        <td class="px-4 py-4" style="color: #7B351C">@record.Date.ToString("dd/MM/yyyy")</td>
+                        <td class="px-4 py-4" style="color: #7B351C">@record.Quantity</td>
+                        <td class="px-4 py-4" style="color: #7B351C">@record.Price.ToString("C")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 }
 

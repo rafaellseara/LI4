@@ -1,46 +1,47 @@
 @typeparam TItem
 
-<div class="flex items-center space-x-2 mb-6 mt-4">
-    <!-- Search -->
-    <div class="flex bg-white rounded-full shadow-md px-4 py-2 w-1/2 justify-between">
-        <div class="flex-column align-content-lg-center">
-            <i class="bi bi-search text-brown-500 mr-2" style="color: #7B351C;"></i>
-            <input type="text" placeholder="Pesquisar" class="outline-none"
-                   style="width: 300px; color: #7B351C;" @bind="SearchTerm" @bind:event="oninput"/>
+<div class="p-6">
+    <div class="flex items-center space-x-2 mb-6 mt-4">
+        <!-- Search -->
+        <div class="flex bg-white rounded-full shadow-md px-4 py-2 w-1/2 justify-between">
+            <div class="flex-column align-content-lg-center">
+                <i class="bi bi-search text-brown-500 mr-2" style="color: #7B351C;"></i>
+                <input type="text" placeholder="Pesquisar" class="outline-none"
+                       style="width: 300px; color: #7B351C;" @bind="SearchTerm" @bind:event="oninput"/>
+            </div>
+            <select class="outline-none" style="color: #7B351C;" @bind="SelectedSearchColumn">
+                @for (var i = 0; i < ColumnHeaders.Count; i++)
+                {
+                    <option value="@i">@ColumnHeaders[i]</option>
+                }
+            </select>
         </div>
-        <select class="outline-none" style="color: #7B351C;" @bind="SelectedSearchColumn">
-            @for (var i = 0; i < ColumnHeaders.Count; i++)
-            {
-                <option value="@i">@ColumnHeaders[i]</option>
-            }
-        </select>
-    </div>
-    <!-- Order Dropdown -->
-    <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2">
-        <i class="bi bi-sort-down text-brown-500 mr-2" style="color: #7B351C;"></i>
-        <select class="bg-transparent text-brown-500 outline-none cursor-pointer" style="color: #7B351C;" @bind="SelectedOrderColumn">
-            <option value="">Ordenar por...</option>
-            @for (var i = 0; i < ColumnHeaders.Count; i++)
-            {
-                <option value="@i">@ColumnHeaders[i]</option>
-            }
-        </select>
-    </div>
-</div>
-
-<div class="p-4 border shadow bg-white" style="border-radius: 20px; margin-top: 4rem;">
-    <div class="flex justify-between items-center mb-4">
-        <div class="fs-3" style="font-weight: 900; color: #7B351C">
-            @Title
+        <!-- Order Dropdown -->
+        <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2">
+            <i class="bi bi-sort-down text-brown-500 mr-2" style="color: #7B351C;"></i>
+            <select class="bg-transparent text-brown-500 outline-none cursor-pointer" style="color: #7B351C;" @bind="SelectedOrderColumn">
+                <option value="">Ordenar por...</option>
+                @for (var i = 0; i < ColumnHeaders.Count; i++)
+                {
+                    <option value="@i">@ColumnHeaders[i]</option>
+                }
+            </select>
         </div>
-        <!-- Add Button -->
-        <button class="text-white px-4 py-2 rounded hover:bg-orange-600" style="background-color: #FC5825;" @onclick="OnAddClick">
-            + Adicionar
-        </button>
     </div>
 
-    <table class="table-auto justify-end w-full">
-        <thead>
+    <div class="p-4 shadow bg-white" style="border-radius: 20px; margin-top: 4rem;">
+        <div class="flex justify-between items-center mb-4">
+            <div class="fs-3" style="font-weight: 900; color: #7B351C">
+                @Title
+            </div>
+            <!-- Add Button -->
+            <button class="text-white px-6 py-2 rounded" style="background-color: #FC5825;" @onclick="OnAddClick">
+                + Adicionar
+            </button>
+        </div>
+
+        <table class="table-auto justify-end w-full">
+            <thead>
             <tr class="border-top">
                 @if (ImageSelector != null)
                 {
@@ -52,8 +53,8 @@
                 }
                 <th class="px-4 py-4 font-semibold" style=" color: #7B351C">Ações</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @if (FilteredItems != null && FilteredItems.Any())
             {
                 @foreach (var item in FilteredItems)
@@ -72,13 +73,13 @@
                         <td class="px-4 py-4">
                             @if (OnEditClick.HasDelegate)
                             {
-                                <button class="icon-button" @onclick="() => OnEditClick.InvokeAsync(item)">
+                                <button class="icon-button mr-5" @onclick="() => OnEditClick.InvokeAsync(item)">
                                     <i class="bi bi-pencil-square " style="color: #7B351C"></i>
                                 </button>
                             }
                             @if (OnRemoveClick.HasDelegate)
                             {
-                                <button class="icon-button ml-5" @onclick="() => OnRemoveClick.InvokeAsync(item)">
+                                <button class="icon-button" @onclick="() => OnRemoveClick.InvokeAsync(item)">
                                     <i class="bi bi-x-lg" style="color: #7B351C"></i>
                                 </button>
                             }
@@ -94,8 +95,9 @@
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @code {
