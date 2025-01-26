@@ -111,7 +111,11 @@ else if (userRole == "Administrador")
             {
                 Console.WriteLine($"Data: {newEmployee.DataDeNascimento}");
                 var senha = newEmployee.Senha;
-                newEmployee.Senha = BCrypt.Net.BCrypt.HashPassword(senha);
+                Console.WriteLine(senha);
+                string hashGerado = BCrypt.Net.BCrypt.HashPassword(senha);
+                Console.WriteLine($"Hash Gerado: {hashGerado}");
+                newEmployee.Senha = hashGerado;
+                newEmployee.Tipo = TipoUtilizador.Funcionario;
                 await UtilizadorService.AddUtilizador(newEmployee);
                 
                 var allUtilizadores = await UtilizadorService.GetAllUtilizadores();

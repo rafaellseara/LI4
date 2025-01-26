@@ -1,5 +1,5 @@
 -- Procedure para buscar as linhas de montagem por ID de utilizador
-CREATE PROCEDURE GetLinhasDeMontagemPorUtilizador
+CREATE PROCEDURE spGetLinhasDeMontagemPorUtilizador
     @IdFuncionario INT
 AS
 BEGIN

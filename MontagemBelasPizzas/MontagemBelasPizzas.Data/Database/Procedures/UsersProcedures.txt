@@ -21,7 +21,7 @@ GO
 -- Procedure para inserir um novo utilizador
 CREATE PROCEDURE spUtilizador_Insert
     @Nome NVARCHAR(45),
-    @Senha NVARCHAR(45),
+    @Senha NVARCHAR(100),
     @NIF CHAR(9),
     @DataDeNascimento DATETIME2(7),
     @ImagemURL NVARCHAR(90),
@@ -39,7 +39,7 @@ GO
 CREATE PROCEDURE spUtilizador_Update
     @Id INT,
     @Nome NVARCHAR(45),
-    @Senha NVARCHAR(45),
+    @Senha NVARCHAR(100),
     @NIF CHAR(9),
     @DataDeNascimento DATETIME2(7),
     @ImagemURL NVARCHAR(90),

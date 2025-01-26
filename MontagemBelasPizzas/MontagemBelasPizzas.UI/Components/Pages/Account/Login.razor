@@ -50,7 +50,13 @@
                 if (matchedUser is not null)
                 {
                     await ((CustomAuthenticationStateProvider)AuthProvider).Login(matchedUser);
-                    Navigation.NavigateTo("/admin-home", forceLoad: true);
+                    if (matchedUser.Tipo == TipoUtilizador.Administrador)
+                    {
+                        Navigation.NavigateTo("/admin-home", forceLoad: true);
+                    } else
+                    {
+                        Navigation.NavigateTo("/employee-home", forceLoad: true);
+                    }
                 }
                 else
                 {

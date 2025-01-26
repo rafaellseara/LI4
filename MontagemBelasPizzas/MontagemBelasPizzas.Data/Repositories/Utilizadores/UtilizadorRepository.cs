@@ -37,6 +37,7 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
 
         public async Task Insert(Utilizador utilizador)
         {
+            Console.WriteLine(utilizador.Senha);
             var parameters = new
             {
                 utilizador.Nome,

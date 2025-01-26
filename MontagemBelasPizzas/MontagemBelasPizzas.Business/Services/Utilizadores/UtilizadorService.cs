@@ -55,7 +55,6 @@ public class UtilizadorService
     
     public async Task AddUtilizador(Utilizador utilizador)
     {
-        utilizador.Tipo = TipoUtilizador.Funcionario;
         await _utilizadorRepository.Insert(utilizador);
     }
 }
