@@ -1,0 +1,10 @@
+-- Procedure para buscar as linhas de montagem por ID de utilizador
+CREATE PROCEDURE GetLinhasDeMontagemPorUtilizador
+    @IdFuncionario INT
+AS
+BEGIN
+    SELECT *
+    FROM LinhaDeMontagem
+    WHERE IdFuncionario = @IdFuncionario;
+END
+GO

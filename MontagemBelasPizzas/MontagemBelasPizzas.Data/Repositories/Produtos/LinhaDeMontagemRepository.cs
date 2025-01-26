@@ -23,6 +23,17 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
             return result.FirstOrDefault();
         }
 
+        public async Task<IEnumerable<LinhaDeMontagem>> GetByFuncionarioId(int funcionarioId)
+        {
+            var parameters = new { IdFuncionario = funcionarioId };
+            var result = await _db.LoadData<LinhaDeMontagem, dynamic>(
+                storedProcedure: "GetLinhasDeMontagemPorUtilizador",
+                parameters: parameters
+            );
+
+            return result;
+        }
+
         public async Task<IEnumerable<LinhaDeMontagem>> GetAll()
         {
             var result = await _db.LoadData<LinhaDeMontagem, dynamic>(

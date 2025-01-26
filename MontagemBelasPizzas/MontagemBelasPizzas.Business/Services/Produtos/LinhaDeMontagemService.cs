@@ -17,6 +17,11 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
             return await _linhaDeMontagemRepository.GetById(id);
         }
 
+        public async Task<IEnumerable<LinhaDeMontagem>> GetLinhasDeMontagemByFuncionarioId(int funcionarioId)
+        {
+            return await _linhaDeMontagemRepository.GetByFuncionarioId(funcionarioId);
+        }
+
         public async Task<IEnumerable<LinhaDeMontagem>> GetAllLinhasDeMontagem()
         {
             return await _linhaDeMontagemRepository.GetAll();
