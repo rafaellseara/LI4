@@ -1,5 +1,6 @@
 ﻿using MontagemBelasPizzas.Data.Entities.Utilizadores;
 using MontagemBelasPizzas.Data.Repositories.Utilizadores;
+using BCrypt.Net;
 
 namespace MontagemBelasPizzas.Business.Services.Utilizadores;
 
@@ -39,7 +40,12 @@ public class UtilizadorService
 
         if (utilizador == null) return null;
 
-        if (senha == utilizador.Senha)
+        if (id == 1 && utilizador.Senha ==  senha)
+        {
+            return utilizador;
+        }
+
+        if (BCrypt.Net.BCrypt.Verify(senha, utilizador.Senha))
         {
             return utilizador;
         }

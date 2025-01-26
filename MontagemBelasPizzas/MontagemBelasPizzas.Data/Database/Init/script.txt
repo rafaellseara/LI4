@@ -3,14 +3,14 @@ CREATE TABLE Utilizador (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Nome NVARCHAR(45) NOT NULL,
     Senha NVARCHAR(45) NOT NULL,
-    NIF CHAR(9) NOT NULL,
-    DataDeNascimento DATETIME2(7) NOT NULL,
-    DataDeCriacao DATETIME2(7) NOT NULL DEFAULT GETDATE(),
+    NIF CHAR(9) NULL,
+    DataDeNascimento DATETIME2(7) NULL,
+    DataDeCriacao DATETIME2(7) NULL DEFAULT GETDATE(),
     ImagemURL NVARCHAR(90) NULL,
-    QuantidadeDeProdutosRealizados INT NOT NULL DEFAULT 0,
-    QuantidadeDeProdutosRejeitados INT NOT NULL DEFAULT 0,
-    MediaDeSatisfacao DECIMAL(4,2) NOT NULL DEFAULT 0,
-    TempoMedioPorProduto TIME NOT NULL DEFAULT '00:00:00',
+    QuantidadeDeProdutosRealizados INT NULL DEFAULT 0,
+    QuantidadeDeProdutosRejeitados INT NULL DEFAULT 0,
+    MediaDeSatisfacao DECIMAL(4,2) NULL DEFAULT 0,
+    TempoMedioPorProduto TIME NULL DEFAULT '00:00:00',
     Tipo NVARCHAR(15) NOT NULL
 );
 
