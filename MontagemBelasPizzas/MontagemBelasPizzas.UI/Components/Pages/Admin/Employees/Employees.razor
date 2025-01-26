@@ -110,6 +110,8 @@ else if (userRole == "Administrador")
             try
             {
                 Console.WriteLine($"Data: {newEmployee.DataDeNascimento}");
+                var senha = newEmployee.Senha;
+                newEmployee.Senha = BCrypt.Net.BCrypt.HashPassword(senha);
                 await UtilizadorService.AddUtilizador(newEmployee);
                 
                 var allUtilizadores = await UtilizadorService.GetAllUtilizadores();
