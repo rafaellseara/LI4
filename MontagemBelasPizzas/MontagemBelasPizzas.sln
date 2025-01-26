@@ -9,21 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MontagemBelasPizzas.Data", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MontagemBelasPizzas.Business", "MontagemBelasPizzas.Business\MontagemBelasPizzas.Business.csproj", "{36074AA1-203E-4597-A76C-20F4672E888C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{FC58229A-B819-49CB-89E3-6D2983B185EC}"
-	ProjectSection(SolutionItems) = preProject
-		databaseData.txt = databaseData.txt
-		procedures.txt = procedures.txt
-		proceduresNew.txt = proceduresNew.txt
-		script.txt = script.txt
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MontagemBelasPizzas.UI", "MontagemBelasPizzas.UI\MontagemBelasPizzas.UI.csproj", "{0AA97996-52AB-4875-BEAD-8E584D5F0A46}"
 	ProjectSection(ProjectDependencies) = postProject
 		{36074AA1-203E-4597-A76C-20F4672E888C} = {36074AA1-203E-4597-A76C-20F4672E888C}
 		{9D2B8613-30BB-427A-9476-46732A03E368} = {9D2B8613-30BB-427A-9476-46732A03E368}
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{79BD7CCE-41BE-44FB-B45A-C990F5C93F66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,9 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9D2B8613-30BB-427A-9476-46732A03E368} = {F2656805-16B1-4512-85A9-6AA0CFEB0B82}
 		{36074AA1-203E-4597-A76C-20F4672E888C} = {F2656805-16B1-4512-85A9-6AA0CFEB0B82}
-		{FC58229A-B819-49CB-89E3-6D2983B185EC} = {F2656805-16B1-4512-85A9-6AA0CFEB0B82}
 		{0AA97996-52AB-4875-BEAD-8E584D5F0A46} = {F2656805-16B1-4512-85A9-6AA0CFEB0B82}
-		{79BD7CCE-41BE-44FB-B45A-C990F5C93F66} = {F2656805-16B1-4512-85A9-6AA0CFEB0B82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E4C6F08-993B-4088-A270-7C1A1E0928AC}
