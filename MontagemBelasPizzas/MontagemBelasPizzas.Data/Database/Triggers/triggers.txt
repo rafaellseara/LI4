@@ -68,29 +68,25 @@ ON Venda
 AFTER INSERT
 AS
 BEGIN
-    DECLARE @IdProduto INT, @Quantidade INT, @IdFuncionario INT;
+    DECLARE @IdProduto INT, @IdOperacao INT, @Quantidade INT;
 
-    -- Obter o IdProduto e a quantidade da venda inserida
-    SELECT @IdProduto = IdProduto, @Quantidade = Quantidade
+    -- Obter o IdProduto e IdOperacao da venda inserida
+    SELECT @IdProduto = IdProduto, @IdOperacao = IdOperacao
     FROM INSERTED;
 
-    -- 1. Atualizar a quantidade de vendas do produto
+    -- Obter a quantidade da operação associada
+    SELECT @Quantidade = Quantidade
+    FROM Operacao
+    WHERE Id = @IdOperacao;
+
+    -- 1. Atualizar a quantidade de vendas do produto e reduzir o stock
     UPDATE Produto
     SET QuantidadeDeVendas = QuantidadeDeVendas + @Quantidade,
         QuantidadeEmStock = QuantidadeEmStock - @Quantidade
     WHERE Id = @IdProduto;
-
-    -- 2. Atualizar a quantidade de produtos vendidos do funcionário
-    -- Obter o Id do funcionário
-    SELECT @IdFuncionario = IdAdministrador
-    FROM Produto
-    WHERE Id = @IdProduto;
-
-    UPDATE Utilizador
-    SET QuantidadeDeProdutosRealizados = QuantidadeDeProdutosRealizados + @Quantidade
-    WHERE Id = @IdFuncionario;
 END;
 GO
+
 
 -- Trigger para quando uma compra for inserida
 CREATE TRIGGER trg_AfterCompraInsert
@@ -98,12 +94,16 @@ ON Compra
 AFTER INSERT
 AS
 BEGIN
-    DECLARE @IdIngrediente INT, @Quantidade INT;
+    DECLARE @IdIngrediente INT, @IdOperacao INT, @Quantidade INT;
 
-    -- Obter o IdIngrediente e a quantidade da compra inserida
-    SELECT @IdIngrediente = IdIngrediente, @Quantidade = Quantidade
-    FROM INSERTED
-    INNER JOIN Operacao ON INSERTED.IdOperacao = Operacao.Id;
+    -- Obter o IdIngrediente e IdOperacao da compra inserida
+    SELECT @IdIngrediente = IdIngrediente, @IdOperacao = IdOperacao
+    FROM INSERTED;
+
+    -- Obter a quantidade da operação associada
+    SELECT @Quantidade = Quantidade
+    FROM Operacao
+    WHERE Id = @IdOperacao;
 
     -- Incrementar a quantidade em stock do ingrediente
     UPDATE Ingrediente
