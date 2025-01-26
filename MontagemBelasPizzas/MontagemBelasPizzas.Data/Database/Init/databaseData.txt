@@ -1,11 +1,11 @@
 -- Inserir 5 registos de utilizadores (2 Administradores, 3 Funcionários)
 INSERT INTO Utilizador (Nome, Senha, NIF, DataDeNascimento, ImagemURL, Tipo)
 VALUES
-('Admin1', 'Senha123', '123456789', '1990-01-01', NULL, 'Administrador'),
-('Admin2', 'Senha123', '987654321', '1992-05-15', NULL, 'Administrador'),
-('Funcionario1', 'Senha123', '456789123', '1995-07-20', NULL, 'Funcionario'),
-('Funcionario2', 'Senha123', '789123456', '1998-09-10', NULL, 'Funcionario'),
-('Funcionario3', 'Senha123', '321654987', '2000-03-05', NULL, 'Funcionario');
+('Fernando Pires', 'iAmUsed', NULL, NULL, NULL, 'Administrador'),
+('Pedro Teixeira', 'gymBroDoggo', NULL, NULL, NULL, 'Administrador'),
+('Rafael Seara', 'lgbtPower', '228592345', '2004-04-25', 'Images/employees/rafael.png', 'Funcionario'),
+('Zita Duarte', 'souBeta', '228592346', '2004-02-10', 'Images/employees/zi.png', 'Funcionario'),
+('Sara Silva', 'fromTheStreets', '228592347', '2003-12-27', 'Images/employees/sa.png', 'Funcionario');
 
 -- Inserir 3 produtos
 INSERT INTO Produto (Nome, Categoria, Preco, QuantidadeDeRealizacoes, QuantidadeDeVendas, QuantidadeDeRejeicoes, MediaDeSatisfacao, MediaDoTempoDeMontagem, QuantidadeEmStock, ImagemURL, IdAdministrador)
@@ -28,7 +28,7 @@ VALUES
 ('Molho de Tomate', 5.00, 75, 0, 'Images/ingredients/tomato_sauce.svg', 1),
 ('Tomate', 5.00, 75, 0, 'Images/ingredients/tomatos.svg', 1);
 
--- Inserir 15 montagens (3 ingredientes para cada produto)
+-- Inserir montagens
 INSERT INTO Montagem (IdIngrediente, IdProduto, Ordem, Descricao)
 VALUES
 -- Produto 1 (Pizza do Mar)
@@ -55,16 +55,33 @@ VALUES
 ('2025-01-01 08:00:00', '2025-01-01 10:00:00', 1, 3, 1), -- Completado
 ('2025-01-02 09:00:00', '2025-01-02 11:30:00', 1, 3, 2), -- Completado
 ('2025-01-03 10:00:00', '2025-01-03 12:15:00', 0, 4, 3), -- Rejeitado
-('2025-01-04 08:30:00', '2025-01-04 10:45:00', 1, 4, 4), -- Completado
-('2025-01-05 07:00:00', '2025-01-05 09:20:00', 0, 5, 5); -- Rejeitado
+('2025-01-04 08:30:00', '2025-01-04 10:45:00', 1, 4, 2), -- Completado
+('2025-01-05 07:00:00', '2025-01-05 09:20:00', 0, 5, 1); -- Rejeitado
 
-INSERT INTO Compra (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, IdIngrediente)
+-- Inserir Operações
+INSERT INTO Operacao (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador)
 VALUES
-(10, 2.50, 25.00, '2025-01-01', 1, 1),
-(20, 3.00, 60.00, '2025-01-02', 1, 2),
-(15, 1.75, 26.25, '2025-01-03', 2, 3);
+-- Compras
+(100, 2.50, 125.00, '2025-01-06 10:00:00', 1),
+(50, 5.00, 150.00, '2025-01-07 11:30:00', 2),
+(75, 5.00, 150.00, '2025-01-07 11:30:00', 2),
+(30, 5.00, 150.00, '2025-01-07 11:30:00', 2),
+-- Vendas
+(5, 12.50, 62.50, '2025-01-08 12:45:00', 1),
+(3, 10.00, 30.00, '2025-01-09 14:20:00', 1),
+(4, 15.00, 60.00, '2025-01-10 09:15:00', 2);
 
-INSERT INTO Venda (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador, IdProduto)
+-- Inserir Compras
+INSERT INTO Compra (IdIngrediente, IdOperacao)
 VALUES
-(5, 10.00, 50.00, '2025-01-04', 1, 1),
-(3, 15.00, 45.00, '2025-01-05', 2, 2);
+(1, 1), -- Base
+(3, 2), -- Queijo
+(5, 3), -- Pepperoni
+(7, 4); -- Ananás
+
+-- Inserir Vendas
+INSERT INTO Venda (IdProduto, IdOperacao)
+VALUES
+(1, 5), -- Pizza do Mar
+(2, 6), -- Pizza Pepperoni
+(3, 7); -- Pizza Caprese

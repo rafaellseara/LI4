@@ -12,45 +12,37 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
             _db = db;
         }
 
-        public async Task<Operacao?> GetById(int id)
+        // Obter todas as compras
+        public async Task<IEnumerable<Compra>> GetAllCompras()
         {
-            var parameters = new { Id = id };
-            var result = await _db.LoadData<Operacao, dynamic>(
-                storedProcedure: "spOperacao_GetById",
-                parameters: parameters
-            );
-
-            return result.FirstOrDefault();
-        }
-
-        public async Task<IEnumerable<Operacao>> GetAll()
-        {
-            var result = await _db.LoadData<Operacao, dynamic>(
-                storedProcedure: "spOperacao_GetAll",
+            var result = await _db.LoadData<Compra, dynamic>(
+                storedProcedure: "spCompra_GetAll",
                 parameters: new { }
             );
 
             return result;
         }
 
-        public async Task Insert(Operacao operacao)
+        // Obter todas as vendas
+        public async Task<IEnumerable<Venda>> GetAllVendas()
         {
-            var parameters = new
-            {
-                operacao.Quantidade,
-                operacao.ValorUnitario,
-                operacao.ValorTotal,
-                operacao.DataDaOperacao,
-                operacao.IdAdministrador
-            };
+            var result = await _db.LoadData<Venda, dynamic>(
+                storedProcedure: "spVenda_GetAll",
+                parameters: new { }
+            );
 
-            await _db.SaveData("spOperacao_Insert", parameters);
+            return result;
         }
 
-        public async Task Delete(int id)
+        public async Task AddCompra(dynamic parameters)
         {
-            var parameters = new { Id = id };
-            await _db.SaveData("spOperacao_Delete", parameters);
+            await _db.SaveData("spInserirCompra", parameters);
         }
+
+        public async Task AddVenda(dynamic parameters)
+        {
+            await _db.SaveData("spInserirVenda", parameters);
+        }
+
     }
 }

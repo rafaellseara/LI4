@@ -36,6 +36,7 @@ builder.Services.AddScoped<IngredienteService>();
 builder.Services.AddScoped<LinhaDeMontagemService>();
 builder.Services.AddScoped<MontagemService>();
 builder.Services.AddScoped<ProdutoService>();
+builder.Services.AddScoped<OperacaoService>();
 builder.Services.AddScoped<UtilizadorService>();
 
 builder.Services.AddMudServices(config =>
@@ -71,6 +72,7 @@ builder.Services.AddScoped<ProtectedLocalStorage>();
 builder.Services.AddAuthenticationCore();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

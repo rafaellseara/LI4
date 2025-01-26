@@ -60,6 +60,7 @@ CREATE TABLE LinhaDeMontagem (
     DataDeInicio DATETIME2(7) NOT NULL,
     DataDeFim DATETIME2(7) NULL,
     Estado BIT NOT NULL DEFAULT 1,
+    Satisfacao INT NOT NULL,
     IdFuncionario INT NOT NULL,
     IdProduto INT NOT NULL,
     CONSTRAINT FK_LinhaDeMontagem_IdFuncionario FOREIGN KEY (IdFuncionario) REFERENCES Utilizador(Id),
