@@ -1,6 +1,6 @@
 @typeparam TItem
 
-<div class="flex items-center space-x-2 mb-6">
+<div class="flex items-center space-x-2 mb-6 mt-4">
     <!-- Search -->
     <div class="flex bg-white rounded-full shadow-md px-4 py-2 w-1/2 justify-between">
         <div class="flex-column align-content-lg-center">
@@ -28,27 +28,29 @@
     </div>
 </div>
 
-<div class="p-4 border rounded-md shadow bg-white">
+<div class="p-4 border shadow bg-white" style="border-radius: 20px; margin-top: 4rem;">
     <div class="flex justify-between items-center mb-4">
-        @Title
+        <div class="fs-3" style="font-weight: 900; color: #7B351C">
+            @Title
+        </div>
         <!-- Add Button -->
-        <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600" @onclick="OnAddClick">
+        <button class="text-white px-4 py-2 rounded hover:bg-orange-600" style="background-color: #FC5825;" @onclick="OnAddClick">
             + Adicionar
         </button>
     </div>
 
-    <table class="table-auto w-full border-collapse">
+    <table class="table-auto justify-end w-full">
         <thead>
-            <tr class="bg-gray-200">
+            <tr class="border-top">
                 @if (ImageSelector != null)
                 {
-                    <th class="border px-4 py-2 text-left" style="width: 80px; min-width: 80px;">Imagem</th>
+                    <th class="px-4 py-4 text-left font-semibold" style="width: 80px; min-width: 80px; color: #7B351C">Imagem</th>
                 }
                 @foreach (var header in ColumnHeaders)
                 {
-                    <th class="border px-4 py-2 text-left">@header</th>
+                    <th class="px-4 py-4 text-left font-semibold" style=" color: #7B351C">@header</th>
                 }
-                <th class="border px-4 py-2">Ações</th>
+                <th class="px-4 py-4 font-semibold" style=" color: #7B351C">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -56,30 +58,28 @@
             {
                 @foreach (var item in FilteredItems)
                 {
-                    <tr class="hover:bg-gray-100">
+                    <tr class="border-top">
                         @if (ImageSelector != null)
                         {
-                            <td class="border px-4 py-2" style="width: 80px; min-width: 80px;">
-                                <img src="@ImageSelector(item)" alt="Imagem" class="w-12 h-12 object-cover" />
+                            <td class="px-4 py-4" style="width: 60px; min-width: 60px;">
+                                <img src="@ImageSelector(item)" alt="Imagem" class="w-10 h-10 object-cover" />
                             </td>
                         }
                         @foreach (var property in PropertySelectors)
                         {
-                            <td class="border px-4 py-2">@property(item)</td>
+                            <td class="px-4 py-4" style="color: #7B351C">@property(item)</td>
                         }
-                        <td class="border px-4 py-2">
+                        <td class="px-4 py-4">
                             @if (OnEditClick.HasDelegate)
                             {
-                                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                                        @onclick="() => OnEditClick.InvokeAsync(item)">
-                                    Editar
+                                <button class="icon-button" @onclick="() => OnEditClick.InvokeAsync(item)">
+                                    <i class="bi bi-pencil-square " style="color: #7B351C"></i>
                                 </button>
                             }
                             @if (OnRemoveClick.HasDelegate)
                             {
-                                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 ml-2"
-                                        @onclick="() => OnRemoveClick.InvokeAsync(item)">
-                                    Remover
+                                <button class="icon-button ml-5" @onclick="() => OnRemoveClick.InvokeAsync(item)">
+                                    <i class="bi bi-x-lg" style="color: #7B351C"></i>
                                 </button>
                             }
                         </td>
