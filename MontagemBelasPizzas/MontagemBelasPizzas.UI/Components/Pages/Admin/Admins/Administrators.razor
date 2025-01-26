@@ -8,7 +8,13 @@
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
 
-@if (!isAuthenticated)
+@if (isLoading)
+{
+    <!-- Mostra um spinner ou placeholder enquanto carrega os dados -->
+    <div class="loading text-center">
+    </div>
+}
+else if (!isAuthenticated)
 {
     <Login />
 }
@@ -34,6 +40,7 @@ else if (userRole == "Administrador")
     private bool isAuthenticated = false;
     private string? userName;
     private string? userRole;
+    private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -48,7 +55,7 @@ else if (userRole == "Administrador")
                 userName = user.Identity.Name;
                 userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
             }
-
+            isLoading = false;
             StateHasChanged();
         }
     }

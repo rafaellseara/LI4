@@ -5,9 +5,17 @@
 @using MontagemBelasPizzas.UI.Components.Pages.Account
 
 
-@if (!isAuthenticated)
+@if (isLoading)
 {
-    <Login />
+<!-- Mostra um spinner ou placeholder enquanto carrega os dados -->
+<div class="loading text-center">
+
+    
+</div>
+}
+else if (!isAuthenticated)
+{
+    <AccessDenied/>
 }
 else if (userRole == "Funcionario")
 {
@@ -108,6 +116,7 @@ else if (userRole == "Administrador")
     private AuthenticationState? authState;
     private bool isAuthenticated = false;
     private string? userRole;
+    private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -121,7 +130,7 @@ else if (userRole == "Administrador")
                 isAuthenticated = true;
                 userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
             }
-
+            isLoading = false;
             StateHasChanged();
         }
     }

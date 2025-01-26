@@ -1,0 +1,67 @@
+﻿using MontagemBelasPizzas.Data.Entities.Produtos;
+using MontagemBelasPizzas.Data.Repositories.Produtos;
+
+namespace MontagemBelasPizzas.Business.Services.Produtos
+{
+    public class OperacaoService
+    {
+        private readonly OperacaoRepository _operacaoRepository;
+
+        public OperacaoService(OperacaoRepository operacaoRepository)
+        {
+            _operacaoRepository = operacaoRepository;
+        }
+
+        // Obter todas as compras
+        public async Task<IEnumerable<Compra>> GetAllCompras()
+        {
+            return await _operacaoRepository.GetAllCompras();
+        }
+
+        // Obter todas as vendas
+        public async Task<IEnumerable<Venda>> GetAllVendas()
+        {
+            return await _operacaoRepository.GetAllVendas();
+        }
+
+        public async Task AddCompra(int idIngrediente, int quantidade, int idAdministrador, decimal preco)
+        {
+            var valorUnitario = preco;
+            var valorTotal = valorUnitario * quantidade;
+
+            var parameters = new
+            {
+                IdIngrediente = idIngrediente,
+                Quantidade = quantidade,
+                ValorUnitario = valorUnitario,
+                ValorTotal = valorTotal,
+                IdAdministrador = idAdministrador
+            };
+
+            await _operacaoRepository.AddCompra(parameters);
+        }
+
+        public async Task AddVenda(int idProduto, int quantidade, int idAdministrador, decimal preco, int qtProduto)
+        {
+            // Verificar se a quantidade em stock é suficiente
+            if (qtProduto < quantidade)
+            {
+                throw new Exception($"Stock insuficiente para o produto '{idProduto}'. Stock atual: {qtProduto}, Pedido: {quantidade}");
+            }
+
+            var valorUnitario = preco;
+            var valorTotal = valorUnitario * quantidade;
+
+            var parameters = new
+            {
+                IdProduto = idProduto,
+                Quantidade = quantidade,
+                ValorUnitario = valorUnitario,
+                ValorTotal = valorTotal,
+                IdAdministrador = idAdministrador
+            };
+
+            await _operacaoRepository.AddVenda(parameters);
+        }
+    }
+}

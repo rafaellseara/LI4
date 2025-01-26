@@ -1,0 +1,86 @@
+-- Stored Procedure para obter todas as compras
+CREATE PROCEDURE spCompra_GetAll
+AS
+BEGIN
+    SELECT 
+        o.Id,
+        o.Quantidade,
+        o.ValorUnitario,
+        o.ValorTotal,
+        o.DataDaOperacao,
+        o.IdAdministrador,
+        c.IdIngrediente
+    FROM Operacao o
+    INNER JOIN Compra c ON o.Id = c.IdOperacao;
+END;
+GO
+
+-- Stored Procedure para obter todas as vendas
+CREATE PROCEDURE spVenda_GetAll
+AS
+BEGIN
+    SELECT 
+        o.Id,
+        o.Quantidade,
+        o.ValorUnitario,
+        o.ValorTotal,
+        o.DataDaOperacao,
+        o.IdAdministrador,
+        v.IdProduto
+    FROM Operacao o
+    INNER JOIN Venda v ON o.Id = v.IdOperacao;
+END;
+GO
+
+-- Stored Procedure para inserir compras
+CREATE PROCEDURE spInserirCompra
+    @IdIngrediente INT,
+    @Quantidade INT,
+    @ValorUnitario DECIMAL(6, 2),
+    @ValorTotal DECIMAL(10, 2),
+    @IdAdministrador INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    -- Inserir na tabela Operacao
+    INSERT INTO Operacao (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador)
+    VALUES (@Quantidade, @ValorUnitario, @ValorTotal, GETDATE(), @IdAdministrador);
+
+    -- Obter o ID da operação recém-inserida
+    DECLARE @IdOperacao INT = SCOPE_IDENTITY();
+
+    -- Inserir na tabela Compra
+    INSERT INTO Compra (IdIngrediente, IdOperacao)
+    VALUES (@IdIngrediente, @IdOperacao);
+
+    COMMIT TRANSACTION;
+END;
+GO
+
+-- Stored Procedure para inserir vendas
+CREATE PROCEDURE spInserirVenda
+    @IdProduto INT,
+    @Quantidade INT,
+    @ValorUnitario DECIMAL(6, 2),
+    @ValorTotal DECIMAL(10, 2),
+    @IdAdministrador INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    -- Inserir na tabela Operacao
+    INSERT INTO Operacao (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador)
+    VALUES (@Quantidade, @ValorUnitario, @ValorTotal, GETDATE(), @IdAdministrador);
+
+    -- Obter o ID da operação recém-inserida
+    DECLARE @IdOperacao INT = SCOPE_IDENTITY();
+
+    -- Inserir na tabela Venda
+    INSERT INTO Venda (IdProduto, IdOperacao)
+    VALUES (@IdProduto, @IdOperacao);
+
+    COMMIT TRANSACTION;
+END;
+GO
+

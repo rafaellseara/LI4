@@ -1,0 +1,76 @@
+-- Procedure para obter utilizador por ID
+CREATE PROCEDURE spUtilizador_GetById
+    @Id INT
+AS
+BEGIN
+    SELECT *
+    FROM Utilizador
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para obter todos os utilizadores
+CREATE PROCEDURE spUtilizador_GetAll
+AS
+BEGIN
+    SELECT *
+    FROM Utilizador;
+END;
+GO
+
+-- Procedure para inserir um novo utilizador
+CREATE PROCEDURE spUtilizador_Insert
+    @Nome NVARCHAR(45),
+    @Senha NVARCHAR(45),
+    @NIF CHAR(9),
+    @DataDeNascimento DATETIME2(7),
+    @ImagemURL NVARCHAR(90),
+    @Tipo NVARCHAR(15)
+AS
+BEGIN
+    INSERT INTO Utilizador (Nome, Senha, NIF, DataDeNascimento, ImagemURL, Tipo)
+    VALUES (@Nome, @Senha, @NIF, @DataDeNascimento, @ImagemURL, @Tipo);
+
+    SELECT SCOPE_IDENTITY() AS NovoId;
+END;
+GO
+
+-- Procedure para atualizar utilizador existente
+CREATE PROCEDURE spUtilizador_Update
+    @Id INT,
+    @Nome NVARCHAR(45),
+    @Senha NVARCHAR(45),
+    @NIF CHAR(9),
+    @DataDeNascimento DATETIME2(7),
+    @ImagemURL NVARCHAR(90),
+    @QuantidadeDeProdutosRealizados INT,
+    @QuantidadeDeProdutosRejeitados INT,
+    @MediaDeSatisfacao DECIMAL(4,2),
+    @TempoMedioPorProduto TIME,
+    @Tipo NVARCHAR(15)
+AS
+BEGIN
+    UPDATE Utilizador
+    SET Nome = @Nome,
+        Senha = @Senha,
+        NIF = @NIF,
+        DataDeNascimento = @DataDeNascimento,
+        ImagemURL = @ImagemURL,
+        QuantidadeDeProdutosRealizados = @QuantidadeDeProdutosRealizados,
+        QuantidadeDeProdutosRejeitados = @QuantidadeDeProdutosRejeitados,
+        MediaDeSatisfacao = @MediaDeSatisfacao,
+        TempoMedioPorProduto = @TempoMedioPorProduto,
+        Tipo = @Tipo
+    WHERE Id = @Id;
+END;
+GO
+
+-- Procedure para apagar utilizador
+CREATE PROCEDURE spUtilizador_Delete
+    @Id INT
+AS
+BEGIN
+    DELETE FROM Utilizador
+    WHERE Id = @Id;
+END;
+GO
