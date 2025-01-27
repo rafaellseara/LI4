@@ -27,8 +27,8 @@ CREATE TABLE Produto (
     MediaDoTempoDeMontagem TIME NOT NULL DEFAULT '00:00:00',
     QuantidadeEmStock INT NOT NULL DEFAULT 0,
     ImagemURL NVARCHAR(90) NOT NULL,
-    IdAdministrador INT NOT NULL,
-    CONSTRAINT FK_Produto_IdAdministrador FOREIGN KEY (IdAdministrador) REFERENCES Utilizador(Id)
+    IdAdministrador INT NULL,
+    CONSTRAINT FK_Produto_IdAdministrador FOREIGN KEY (IdAdministrador) REFERENCES Utilizador(Id) ON DELETE SET NULL
 );
 
 -- Criação da tabela Ingrediente
@@ -39,8 +39,8 @@ CREATE TABLE Ingrediente (
     QuantidadeEmStock INT NOT NULL DEFAULT 0,
     EmUso BIT NOT NULL DEFAULT 1,
     ImagemURL NVARCHAR(90) NOT NULL,
-    IdAdministrador INT NOT NULL,
-    CONSTRAINT FK_Ingrediente_IdAdministrador FOREIGN KEY (IdAdministrador) REFERENCES Utilizador(Id)
+    IdAdministrador INT NULL,
+    CONSTRAINT FK_Ingrediente_IdAdministrador FOREIGN KEY (IdAdministrador) REFERENCES Utilizador(Id) ON DELETE SET NULL
 );
 
 -- Criação da tabela Montagem
@@ -61,10 +61,10 @@ CREATE TABLE LinhaDeMontagem (
     DataDeFim DATETIME2(7) NULL,
     Estado BIT NOT NULL DEFAULT 1,
     Satisfacao INT NOT NULL,
-    IdFuncionario INT NOT NULL,
-    IdProduto INT NOT NULL,
-    CONSTRAINT FK_LinhaDeMontagem_IdFuncionario FOREIGN KEY (IdFuncionario) REFERENCES Utilizador(Id),
-    CONSTRAINT FK_LinhaDeMontagem_IdProduto FOREIGN KEY (IdProduto) REFERENCES Produto(Id)
+    IdFuncionario INT NULL,
+    IdProduto INT NULL,
+    CONSTRAINT FK_LinhaDeMontagem_IdFuncionario FOREIGN KEY (IdFuncionario) REFERENCES Utilizador(Id) ON DELETE SET NULL,
+    CONSTRAINT FK_LinhaDeMontagem_IdProduto FOREIGN KEY (IdProduto) REFERENCES Produto(Id) ON DELETE SET NULL
 );
 
 -- Criação da tabela Operacao
@@ -74,24 +74,24 @@ CREATE TABLE Operacao (
     ValorUnitario DECIMAL(4,2) NOT NULL,
     ValorTotal DECIMAL(6,2) NOT NULL,
     DataDaOperacao DATETIME2(7) NOT NULL DEFAULT GETDATE(),
-    IdAdministrador INT NOT NULL,
-    CONSTRAINT FK_Operacao_IdAdministrador FOREIGN KEY (IdAdministrador) REFERENCES Utilizador(Id)
+    IdAdministrador INT NULL,
+    CONSTRAINT FK_Operacao_IdAdministrador FOREIGN KEY (IdAdministrador) REFERENCES Utilizador(Id) ON DELETE SET NULL
 );
 
 -- Criação da tabela Compra
 CREATE TABLE Compra (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    IdIngrediente INT NOT NULL,
+    IdIngrediente INT NULL,
     IdOperacao INT NOT NULL,
-    CONSTRAINT FK_Compra_IdIngrediente FOREIGN KEY (IdIngrediente) REFERENCES Ingrediente(Id),
+    CONSTRAINT FK_Compra_IdIngrediente FOREIGN KEY (IdIngrediente) REFERENCES Ingrediente(Id) ON DELETE SET NULL,
     CONSTRAINT FK_Compra_IdOperacao FOREIGN KEY (IdOperacao) REFERENCES Operacao(Id)
 );
 
 -- Criação da tabela Venda
 CREATE TABLE Venda (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    IdProduto INT NOT NULL,
+    IdProduto INT NULL,
     IdOperacao INT NOT NULL,
-    CONSTRAINT FK_Venda_IdProduto FOREIGN KEY (IdProduto) REFERENCES Produto(Id),
+    CONSTRAINT FK_Venda_IdProduto FOREIGN KEY (IdProduto) REFERENCES Produto(Id) ON DELETE SET NULL,
     CONSTRAINT FK_Venda_IdOperacao FOREIGN KEY (IdOperacao) REFERENCES Operacao(Id)
 );
