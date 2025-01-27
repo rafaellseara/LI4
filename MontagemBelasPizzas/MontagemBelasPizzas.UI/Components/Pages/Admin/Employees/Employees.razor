@@ -75,7 +75,7 @@ else if (userRole == "Administrador")
         u => u.DataDeCriacao.ToString("yyyy-MM-dd"),
         u => u.QuantidadeDeProdutosRealizados,
         u => u.QuantidadeDeProdutosRejeitados,
-        u => $"{u.MediaDeSatisfacao:F1}%", // Format satisfaction as a percentage
+        u => u.MediaDeSatisfacao, // Format satisfaction as a percentage
         u => u.TempoMedioPorProduto.ToString(@"hh\:mm\:ss") // Format TimeSpan
     };
 
