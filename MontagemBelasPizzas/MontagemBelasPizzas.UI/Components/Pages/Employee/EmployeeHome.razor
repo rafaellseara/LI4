@@ -78,9 +78,15 @@ else if (userRole == "Funcionario")
             <!-- Métricas -->
             <div class="grid grid-cols-2 gap-6 items-center">
                 <!-- Gráfico de Progresso -->
-                <div class="bg-white p-6 rounded-lg text-center flex flex-col items-center justify-center" style="height: 225px;">
-                    <i class="bi bi-pie-chart text-[#006837]" style="font-size: 8rem;"></i>
-                    <p class="text-[#006837] mt-4" style="font-family: 'Poppins', sans-serif;">Gráfico de Progresso</p>
+                <div class="bg-white p-6 rounded-lg text-center flex flex-col items-center justify-center overflow-hidden" style="height: 225px;">
+                    @if (utilizador != null)
+                    {
+                        <MudChart class="mt-5" ChartType="ChartType.Pie" ChartOptions="options1" InputData="chartData" InputLabels="chartLabels" Width="125px" Height="125px" />
+                    }
+                    else
+                    {
+                        <p class="text-[#006837] mt-4" style="font-family: 'Poppins', sans-serif;">Sem dados disponíveis</p>
+                    }
                 </div>
 
                 <div class="flex flex-col justify-between" style="height: 225px;">
@@ -215,6 +221,9 @@ else if (userRole == "Funcionario")
     private bool isLoading = true;
     private Utilizador? utilizador;
     private List<LinhaDeHistorico>? Historico;
+    private double[] chartData;
+    private string[] chartLabels;
+    private ChartOptions options1 = new ChartOptions();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -232,6 +241,15 @@ else if (userRole == "Funcionario")
                 utilizador = await UtilizadorService.GetUtilizadorById(userId);
 
                 await LoadHistoricoAsync();
+
+                chartData = utilizador != null
+                ? new double[] { utilizador.QuantidadeDeProdutosRealizados, utilizador.QuantidadeDeProdutosRejeitados }
+                : new double[] { 0, 0 };
+
+                chartLabels = new string[] { "Pizzas Realizadas", "Pizzas Rejeitadas" };
+
+                options1.ChartPalette = new[] { "#7FA979", "#FC5825" };
+
             }
             isLoading = false;
 
@@ -314,5 +332,4 @@ else if (userRole == "Funcionario")
         };
     })
     .ToList();
-
 }
