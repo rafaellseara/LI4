@@ -3,9 +3,18 @@ CREATE PROCEDURE spUtilizador_GetById
     @Id INT
 AS
 BEGIN
-    SELECT *
-    FROM Utilizador
-    WHERE Id = @Id;
+    SELECT 
+        u.*,
+        -- Calcular a média de satisfação e o tempo médio por produto
+        ISNULL(AVG(CAST(lm.Satisfacao AS DECIMAL(4,2))), 0) AS MediaDeSatisfacaoCalculada,
+        ISNULL(CAST(DATEADD(SECOND, AVG(DATEDIFF(SECOND, lm.DataDeInicio, lm.DataDeFim)), 0) AS TIME), '00:00:00') AS TempoMedioPorProdutoCalculado
+    FROM Utilizador u
+    LEFT JOIN LinhaDeMontagem lm ON lm.IdFuncionario = u.Id
+    WHERE u.Id = @Id
+    GROUP BY 
+        u.Id, u.Nome, u.Senha, u.NIF, u.DataDeNascimento, u.DataDeCriacao,
+        u.ImagemURL, u.QuantidadeDeProdutosRealizados, u.QuantidadeDeProdutosRejeitados,
+        u.MediaDeSatisfacao, u.TempoMedioPorProduto, u.Tipo;
 END;
 GO
 
@@ -13,10 +22,20 @@ GO
 CREATE PROCEDURE spUtilizador_GetAll
 AS
 BEGIN
-    SELECT *
-    FROM Utilizador;
+    SELECT 
+        u.*,
+        -- Calcular a média de satisfação e o tempo médio por produto
+        ISNULL(AVG(CAST(lm.Satisfacao AS DECIMAL(4,2))), 0) AS MediaDeSatisfacaoCalculada,
+        ISNULL(CAST(DATEADD(SECOND, AVG(DATEDIFF(SECOND, lm.DataDeInicio, lm.DataDeFim)), 0) AS TIME), '00:00:00') AS TempoMedioPorProdutoCalculado
+    FROM Utilizador u
+    LEFT JOIN LinhaDeMontagem lm ON lm.IdFuncionario = u.Id
+    GROUP BY 
+        u.Id, u.Nome, u.Senha, u.NIF, u.DataDeNascimento, u.DataDeCriacao,
+        u.ImagemURL, u.QuantidadeDeProdutosRealizados, u.QuantidadeDeProdutosRejeitados,
+        u.MediaDeSatisfacao, u.TempoMedioPorProduto, u.Tipo;
 END;
 GO
+
 
 -- Procedure para inserir um novo utilizador
 CREATE PROCEDURE spUtilizador_Insert
