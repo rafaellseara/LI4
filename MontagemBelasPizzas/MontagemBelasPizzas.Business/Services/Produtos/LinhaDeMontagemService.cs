@@ -12,34 +12,14 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
             _linhaDeMontagemRepository = linhaDeMontagemRepository;
         }
 
-        public async Task<LinhaDeMontagem?> GetLinhaDeMontagemById(int id)
-        {
-            return await _linhaDeMontagemRepository.GetById(id);
-        }
-
         public async Task<IEnumerable<LinhaDeMontagem>> GetLinhasDeMontagemByFuncionarioId(int funcionarioId)
         {
             return await _linhaDeMontagemRepository.GetByFuncionarioId(funcionarioId);
         }
 
-        public async Task<IEnumerable<LinhaDeMontagem>> GetAllLinhasDeMontagem()
-        {
-            return await _linhaDeMontagemRepository.GetAll();
-        }
-
         public async Task CreateLinhaDeMontagem(LinhaDeMontagem linha)
         {
             await _linhaDeMontagemRepository.Insert(linha);
-        }
-
-        public async Task UpdateLinhaDeMontagem(LinhaDeMontagem linha)
-        {
-            await _linhaDeMontagemRepository.Update(linha);
-        }
-
-        public async Task DeleteLinhaDeMontagem(int id)
-        {
-            await _linhaDeMontagemRepository.Delete(id);
         }
     }
 }
