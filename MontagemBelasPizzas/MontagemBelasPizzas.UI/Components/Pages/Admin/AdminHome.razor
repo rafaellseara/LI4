@@ -189,8 +189,8 @@ else if (userRole == "Administrador")
         try
         {
 
-            var compras = await OperacaoService.GetAllComprasByAdminId(userId);
-            var vendas = await OperacaoService.GetAllVendasByAdminId(userId);
+            var compras = await OperacaoService.GetAllCompras();
+            var vendas = await OperacaoService.GetAllVendas();
 
             Historico = new List<LinhaDeHistorico>();
 
