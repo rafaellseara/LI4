@@ -75,6 +75,17 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
 
             await _operacaoRepository.AddVenda(parameters);
         }
+
+        public async Task<List<int>> GetSalesPerMonth()
+        {
+            return await _operacaoRepository.GetSalesPerMonth();
+        }
+
+        // Obter compras por mês
+        public async Task<List<int>> GetBuysPerMonth()
+        {
+            return await _operacaoRepository.GetBuysPerMonth();
+        }
     }
 }
 

@@ -32,6 +32,34 @@ BEGIN
 END;
 GO
 
+-- Procedure para obter todas as vendas num mes
+CREATE PROCEDURE spSalesPerMonth
+AS
+BEGIN
+    SELECT
+        MONTH(o.DataDaOperacao) AS Mes,
+        COUNT(*) AS NumeroDeVendas
+    FROM Operacao o
+    INNER JOIN Venda v ON o.Id = v.IdOperacao
+    GROUP BY MONTH(o.DataDaOperacao)
+    ORDER BY Mes;
+END;
+GO
+
+-- Procedure para obter todas as compras num mes
+CREATE PROCEDURE spBuysPerMonth
+AS
+BEGIN
+    SELECT
+        MONTH(o.DataDaOperacao) AS Mes,
+        COUNT(*) AS NumeroDeCompras
+    FROM Operacao o
+    INNER JOIN Compra c ON o.Id = c.IdOperacao
+    GROUP BY MONTH(o.DataDaOperacao)
+    ORDER BY Mes;
+END;
+GO
+
 -- Stored Procedure para obter todas as compras de um admin
 CREATE PROCEDURE spCompra_GetAllByAdminId
     @IdAdministrador INT
