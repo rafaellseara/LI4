@@ -150,3 +150,16 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE spTop5MostSoldProducts
+AS
+BEGIN
+    SELECT TOP 5
+        p.Nome AS ProdutoNome,
+        SUM(o.Quantidade) AS QuantidadeVendida
+    FROM Venda v
+    INNER JOIN Operacao o ON v.IdOperacao = o.Id
+    INNER JOIN Produto p ON v.IdProduto = p.Id
+    GROUP BY p.Nome
+    ORDER BY QuantidadeVendida DESC;
+END;
+GO

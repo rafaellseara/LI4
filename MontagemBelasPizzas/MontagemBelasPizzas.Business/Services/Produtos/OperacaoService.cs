@@ -86,6 +86,11 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
         {
             return await _operacaoRepository.GetBuysPerMonth();
         }
+        
+        public async Task<IEnumerable<(Produto Produto, int QuantidadeVendida)>> GetTop5MostSoldProducts()
+        {
+            return await _operacaoRepository.GetTop5MostSoldProducts();
+        }
     }
 }
 

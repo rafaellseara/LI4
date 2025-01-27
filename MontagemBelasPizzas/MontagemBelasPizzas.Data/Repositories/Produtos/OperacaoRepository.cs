@@ -70,7 +70,10 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
                 salesPerMonth[row.Mes - 1] = row.NumeroDeVendas;
             }
 
-            Console.WriteLine("RAFA" + salesPerMonth.ToList());
+            foreach (var var in salesPerMonth)
+            {
+                Console.WriteLine(var);
+            }
 
             return salesPerMonth.ToList();
         }
@@ -89,7 +92,10 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
                 buysPerMonth[row.Mes - 1] = row.NumeroDeCompras;
             }
 
-            Console.WriteLine("RAFA" + buysPerMonth.ToList());
+            foreach (var var in buysPerMonth)
+            {
+                Console.WriteLine(var);
+            }
 
             return buysPerMonth.ToList();
         }
@@ -102,6 +108,24 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
         public async Task AddVenda(dynamic parameters)
         {
             await _db.SaveData("spInserirVenda", parameters);
+        }
+        
+        public async Task<IEnumerable<(Produto Produto, int QuantidadeVendida)>> GetTop5MostSoldProducts()
+        {
+            var rawData = await _db.LoadData<dynamic, dynamic>(
+                storedProcedure: "spTop5MostSoldProducts",
+                parameters: new { }
+            );
+            
+            var result = rawData.Select(data => (
+                Produto: new Produto
+                {
+                    Nome = data.ProdutoNome,
+                },
+                QuantidadeVendida: (int)data.QuantidadeVendida
+            ));
+
+            return result;
         }
     }
 }
