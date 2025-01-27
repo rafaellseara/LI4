@@ -88,5 +88,15 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
                 parameters: parameters
             );
         }
+        public async Task IncrementarPizzasRejeitadas(int id)
+        {
+            var parameters = new { Id = id };
+
+            await _db.SaveData(
+                storedProcedure: "spUtilizador_IncrementarPizzasRejeitadas",
+                parameters: parameters
+            );
+        }
+
     }
 }

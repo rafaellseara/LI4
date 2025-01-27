@@ -7,6 +7,11 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
     {
         private readonly MontagemRepository _montagemRepository;
 
+        public MontagemService(MontagemRepository montagemRepository)
+        {
+            _montagemRepository = montagemRepository;
+        }
+
         public async Task<IEnumerable<Montagem>> GetMontagensByProdutoId(int produtoId)
         {
             return await _montagemRepository.GetByProdutoId(produtoId);

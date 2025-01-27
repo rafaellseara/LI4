@@ -57,5 +57,11 @@ public class UtilizadorService
     {
         await _utilizadorRepository.Insert(utilizador);
     }
+
+    public async Task IncrementarPizzasRejeitadas(int id)
+    {
+        await _utilizadorRepository.IncrementarPizzasRejeitadas(id);
+    }
+
 }
 

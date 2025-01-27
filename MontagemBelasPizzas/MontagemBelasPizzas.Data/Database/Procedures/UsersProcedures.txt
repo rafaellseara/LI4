@@ -74,3 +74,20 @@ BEGIN
     WHERE Id = @Id;
 END;
 GO
+
+-- Procedure para aumentar em 1 as pizzas rejeitadas
+CREATE PROCEDURE spUtilizador_IncrementarPizzasRejeitadas
+    @Id INT
+AS
+BEGIN
+    -- Atualiza o campo QuantidadeDeProdutosRejeitados incrementando em 1
+    UPDATE Utilizador
+    SET QuantidadeDeProdutosRejeitados = QuantidadeDeProdutosRejeitados + 1
+    WHERE Id = @Id;
+
+    -- Retorna os dados do utilizador atualizado (opcional)
+    SELECT *
+    FROM Utilizador
+    WHERE Id = @Id;
+END;
+GO
