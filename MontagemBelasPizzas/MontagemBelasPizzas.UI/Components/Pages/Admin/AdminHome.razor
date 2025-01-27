@@ -1,9 +1,12 @@
 ﻿@page "/admin-home"
 @using Microsoft.AspNetCore.Components.Authorization
+@inject ProdutoService ProdutoService
+@inject IngredienteService IngredienteService
+@inject OperacaoService OperacaoService
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
+@using System.Security.Claims
 @using MontagemBelasPizzas.UI.Components.Pages.Account
-
 
 @if (isLoading)
 {
@@ -33,9 +36,9 @@ else if (userRole == "Administrador")
                            style="width: 300px; color: #7B351C;" @bind="SearchTerm" @bind:event="oninput"/>
                 </div>
                 <select class="outline-none" style="color: #7B351C;" @bind="SelectedSearchColumn">
-                    @for (var i = 0; i < ColumnHeaders.Count; i++)
+                    @for (var i = 0; i < columnHeaders.Count; i++)
                     {
-                        <option value="@i">@ColumnHeaders[i]</option>
+                        <option value="@i">@columnHeaders[i]</option>
                     }
                 </select>
             </div>
@@ -44,9 +47,9 @@ else if (userRole == "Administrador")
                 <i class="bi bi-sort-down text-brown-500 mr-2" style="color: #7B351C;"></i>
                 <select class="bg-transparent text-brown-500 outline-none cursor-pointer" style="color: #7B351C;" @bind="SelectedOrderColumn">
                     <option value="">Ordenar por...</option>
-                    @for (var i = 0; i < ColumnHeaders.Count; i++)
+                    @for (var i = 0; i < columnHeaders.Count; i++)
                     {
-                        <option value="@i">@ColumnHeaders[i]</option>
+                        <option value="@i">@columnHeaders[i]</option>
                     }
                 </select>
             </div>
@@ -84,30 +87,62 @@ else if (userRole == "Administrador")
             </div>
         </div>
 
-        <!-- History Table -->
-        <div class="p-4 bg-white shadow mt-12" style="border-radius: 20px">
-            <div class="mb-4 fs-3" style="font-weight: 900; color: #7B351C">Histórico</div>
-            <table class="table-auto w-full">
+        <!-- Historico Section -->
+        <div class="p-4 shadow bg-white" style="border-radius: 20px;">
+            <div class="flex justify-between items-center mb-4">
+                <div class="fs-3" style="font-weight: 900; color: #7B351C">
+                    Histórico
+                </div>
+            </div>
+
+            <table class="table-auto justify-end w-full">
                 <thead>
-                <tr class=" border-t py-4">
-                    <th class="px-4 py-4" style="color: #7B351C">Tipo</th>
-                    <th class="px-4 py-4" style="color: #7B351C">Nome</th>
-                    <th class="px-4 py-4" style="color: #7B351C">ID</th>
-                    <th class="px-4 py-4" style="color: #7B351C">Data</th>
-                    <th class="px-4 py-4" style="color: #7B351C">Quantidade</th>
-                    <th class="px-4 py-4" style="color: #7B351C">Preço</th>
+                <tr class="border-top">
+                    @foreach (var header in columnHeaders)
+                    {
+                        <th class="px-4 py-4 text-left font-semibold" style=" color: #7B351C">@header</th>
+                    }
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var record in FilteredHistory)
+                @if (FilteredItems != null && FilteredItems.Any())
                 {
-                    <tr class="border-t py-4">
-                        <td class="px-4 py-4" style="color: #7B351C">@record.Type</td>
-                        <td class="px-4 py-4" style="color: #7B351C">@record.Name</td>
-                        <td class="px-4 py-4" style="color: #7B351C">@record.Id</td>
-                        <td class="px-4 py-4" style="color: #7B351C">@record.Date.ToString("dd/MM/yyyy")</td>
-                        <td class="px-4 py-4" style="color: #7B351C">@record.Quantity</td>
-                        <td class="px-4 py-4" style="color: #7B351C">@record.Price.ToString("C")</td>
+                    @foreach (var item in FilteredItems)
+                    {
+                        <tr class="border-top">
+                            <!-- Coluna Tipo -->
+                            <td class="px-4 py-4" style="color: #7B351C">
+                                @item.Type
+                            </td>
+                            <!-- Coluna Nome -->
+                            <td class="px-4 py-4" style="color: #7B351C">
+                                @item.Name
+                            </td>
+                            <!-- Coluna ID -->
+                            <td class="px-4 py-4" style="color: #7B351C">
+                                @item.Id
+                            </td>
+                            <!-- Coluna Data -->
+                            <td class="px-4 py-4" style="color: #7B351C">
+                                @item.Date
+                            </td>
+                            <!-- Coluna Quantidade -->
+                            <td class="px-4 py-4" style="color: #7B351C">
+                                @item.Quantity
+                            </td>
+                            <!-- Coluna Preço -->
+                            <td class="px-4 py-4" style="color: #7B351C">
+                                @item.Price
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td class="border px-4 py-2 text-center" colspan="@columnHeaders.Count + 1">
+                            Nenhum dado disponível.
+                        </td>
                     </tr>
                 }
                 </tbody>
@@ -121,7 +156,14 @@ else if (userRole == "Administrador")
     private AuthenticationState? authState;
     private bool isAuthenticated = false;
     private string? userRole;
+    private int userId;
     private bool isLoading = true;
+    private List<LinhaDeHistorico>? Historico;
+
+    private decimal TotalCost;
+    private decimal TotalRevenue;
+    private decimal ProfitMargin;
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -134,89 +176,117 @@ else if (userRole == "Administrador")
             {
                 isAuthenticated = true;
                 userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+                userId = int.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "1");
+
+                await LoadHistoricoAsync();
             }
             isLoading = false;
             StateHasChanged();
         }
     }
 
-    // What the second fuck is this?
-    
+    private async Task LoadHistoricoAsync()
+    {
+        try
+        {
+
+            var compras = await OperacaoService.GetAllComprasByAdminId(userId);
+            var vendas = await OperacaoService.GetAllVendasByAdminId(userId);
+
+            Historico = new List<LinhaDeHistorico>();
+
+            foreach (var compra in compras)
+            {
+                var ingrediente = await IngredienteService.GetIngredienteById(compra.IdIngrediente);
+
+                if (ingrediente != null)
+                {
+                    Historico.Add(new LinhaDeHistorico
+                        {
+                            Type = "Ingrediente",
+                            Name = ingrediente.Nome,
+                            Id = compra.IdIngrediente.ToString(),
+                            Date = compra.DataDaOperacao.ToString("dd-MM-yyyy"),
+                            Quantity = compra.Quantidade.ToString(),
+                            Price = compra.ValorTotal.ToString()
+                        });
+
+                    TotalCost += compra.ValorTotal;
+                }
+            }
+
+            foreach (var venda in vendas)
+            {
+                var produto = await ProdutoService.GetProdutoById(venda.IdProduto);
+
+                if (produto != null)
+                {
+                    Historico.Add(new LinhaDeHistorico
+                        {
+                            Type = "Produto",
+                            Name = produto.Nome,
+                            Id = venda.IdProduto.ToString(),
+                            Date = venda.DataDaOperacao.ToString("dd-MM-yyyy"),
+                            Quantity = venda.Quantidade.ToString(),
+                            Price = venda.ValorTotal.ToString()
+                        });
+                    TotalRevenue += venda.ValorTotal;
+                }
+            }
+            TotalRevenue = TotalCost - TotalRevenue;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Erro ao carregar dados: {ex.Message}");
+        }
+    }
+
+    public class LinhaDeHistorico
+    {
+        public string Type { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Id { get; set; } = string.Empty;
+        public string Date { get; set; } = string.Empty;
+        public string Quantity { get; set; } = string.Empty;
+        public string Price { get; set; } = string.Empty;
+    }
+
     private string SearchTerm { get; set; } = string.Empty;
     private int SelectedSearchColumn { get; set; } = 0;
     private int? SelectedOrderColumn { get; set; } = null;
     
-    private decimal TotalCost => History.Sum(record => record.Price * record.Quantity);
-    private decimal TotalRevenue => History.Sum(record => record.Price * record.Quantity * 1.5m); // Example multiplier for revenue
-    private decimal ProfitMargin => TotalRevenue - TotalCost;
-
-
-    private List<string> ColumnHeaders = new List<string>
+    private List<string> columnHeaders = new List<string>
     {
         "Tipo", "Nome", "ID", "Data", "Quantidade", "Preço"
     };
 
-    private List<Record> History = new List<Record>
+    private List<LinhaDeHistorico>? FilteredItems => Historico?
+    .Where(item =>
+        string.IsNullOrEmpty(SearchTerm) ||
+        item.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pelo nome
+        item.Id.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pelo ID
+        item.Date.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pela data
+        item.Quantity.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pela quantidade
+        item.Price.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) // Pesquisa pelo preço
+    )
+    .OrderBy(item =>
     {
-        new Record { Type = "Produto", Name = "Pizza Margherita", Id = 101, Date = DateTime.Parse("2024-02-12"), Quantity = 200, Price = 450.00m },
-        new Record { Type = "Ingrediente", Name = "Queijo", Id = 201, Date = DateTime.Parse("2024-01-15"), Quantity = 50, Price = 120.00m },
-        new Record { Type = "Produto", Name = "Pizza Pepperoni", Id = 102, Date = DateTime.Parse("2024-03-10"), Quantity = 180, Price = 520.00m },
-        new Record { Type = "Ingrediente", Name = "Molho de Tomate", Id = 202, Date = DateTime.Parse("2024-01-18"), Quantity = 300, Price = 80.00m },
-        new Record { Type = "Produto", Name = "Pizza Vegetariana", Id = 103, Date = DateTime.Parse("2024-02-25"), Quantity = 120, Price = 500.00m },
-        new Record { Type = "Ingrediente", Name = "Azeitonas", Id = 203, Date = DateTime.Parse("2024-02-01"), Quantity = 70, Price = 40.00m },
-        new Record { Type = "Produto", Name = "Pizza de Camarão", Id = 104, Date = DateTime.Parse("2024-04-05"), Quantity = 90, Price = 600.00m },
-        new Record { Type = "Ingrediente", Name = "Camarão", Id = 204, Date = DateTime.Parse("2024-01-28"), Quantity = 100, Price = 200.00m },
-        new Record { Type = "Produto", Name = "Pizza de Frango", Id = 105, Date = DateTime.Parse("2024-03-12"), Quantity = 140, Price = 480.00m },
-        new Record { Type = "Ingrediente", Name = "Frango", Id = 205, Date = DateTime.Parse("2024-02-15"), Quantity = 80, Price = 150.00m },
-        new Record { Type = "Produto", Name = "Pizza Quatro Queijos", Id = 106, Date = DateTime.Parse("2024-04-10"), Quantity = 110, Price = 530.00m },
-        new Record { Type = "Ingrediente", Name = "Bacon", Id = 206, Date = DateTime.Parse("2024-03-01"), Quantity = 60, Price = 100.00m },
-        new Record { Type = "Produto", Name = "Pizza de Bacon", Id = 107, Date = DateTime.Parse("2024-05-02"), Quantity = 100, Price = 570.00m },
-        new Record { Type = "Ingrediente", Name = "Orégãos", Id = 207, Date = DateTime.Parse("2024-01-10"), Quantity = 150, Price = 30.00m },
-        new Record { Type = "Produto", Name = "Pizza de Atum", Id = 108, Date = DateTime.Parse("2024-02-20"), Quantity = 95, Price = 540.00m },
-        new Record { Type = "Ingrediente", Name = "Atum", Id = 208, Date = DateTime.Parse("2024-03-05"), Quantity = 85, Price = 180.00m }
-        // Adicionar mais registros conforme necessário
-    };
-
-    private IEnumerable<Record> FilteredHistory => History
-        .Where(record => string.IsNullOrEmpty(SearchTerm) || MatchesSearchTerm(record))
-        .OrderBy(record => SelectedOrderColumn.HasValue ? GetPropertyValue(record, SelectedOrderColumn.Value) : null);
-
-    private bool MatchesSearchTerm(Record record)
-    {
-        var value = GetPropertyValue(record, SelectedSearchColumn)?.ToString()?.ToLower() ?? string.Empty;
-        return value.Contains(SearchTerm.ToLower());
-    }
-
-    private object GetPropertyValue(Record record, int columnIndex)
-    {
-        return columnIndex switch
+        return SelectedOrderColumn switch
         {
-            0 => record.Type,
-            1 => record.Name,
-            2 => record.Id,
-            3 => record.Date,
-            4 => record.Quantity,
-            5 => record.Price,
-            _ => null
+            0 => item.Type, // Ordena pelo tipo (Ingrediente ou Produto)
+            1 => item.Name, // Ordena pelo nome
+            2 => item.Id, // Ordena pelo ID
+            3 => item.Date, // Ordena pela data
+            4 => item.Quantity, // Ordena pela quantidade
+            5 => item.Price, // Ordena pelo preço
+            _ => item.Name
         };
-    }
-
-    public class Record
-    {
-        public string Type { get; set; }
-        public string Name { get; set; }
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
-    }
+    })
+    .ToList();
     
     private ChartOptions options1 = new ChartOptions();
-    public List<ChartSeries> Series1 = new List<ChartSeries>()
-    {
-        new ChartSeries() { Name = "Compras", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70, 77, 98, 104 }},
-        new ChartSeries() { Name = "Vendas", Data = new double[] { 100, 44, 60, 90, 30, 20, 10, 50, 80, 60, 80, 160 }}
-    };
+    public List<ChartSeries> Series1 { get; set; } = new List<ChartSeries>();
+    
     public string[] XAxisLabels1 = { "Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Aug", "Set", "Out", "Nov", "Dez" };
     
     private ChartOptions options2 = new ChartOptions();
@@ -228,7 +298,7 @@ else if (userRole == "Administrador")
     };
     public string[] XAxisLabels2 = { "", "Pizza Calabresa", "Pizza Pepperoni", "Pizza Mar", "Pizza Ananas", "Pizza Pesto", "" };
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         options1.InterpolationOption = InterpolationOption.NaturalSpline;
         options1.YAxisFormat = "0";
@@ -240,5 +310,31 @@ else if (userRole == "Administrador")
         options2.ShowLegendLabels = false;
         options2.ShowLegend = false;
         options2.ShowToolTips = false;
+
+        try
+        {
+            // Fetch data
+            var salesPerMonth = await OperacaoService.GetSalesPerMonth();
+            var buysPerMonth = await OperacaoService.GetBuysPerMonth();
+
+            // Populate chart series
+            Series1 = new List<ChartSeries>
+            {
+                new ChartSeries
+                {
+                    Name = "Compras",
+                    Data = buysPerMonth.Select(b => (double)b).ToArray()
+                },
+                new ChartSeries
+                {
+                    Name = "Vendas",
+                    Data = salesPerMonth.Select(s => (double)s).ToArray()
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching monthly data: {ex.Message}");
+        }
     }
 }
