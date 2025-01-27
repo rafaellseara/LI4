@@ -7,7 +7,7 @@
                           Variant="Variant.Outlined"
                           Style="background-color: #ffffff; border-radius: 20px;" />
             <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4" Color="Color.Primary">Senha</MudText>
-            <MudTextField @bind-Value="Senha" Required="true"
+            <MudTextField @bind-Value="Administrator.Senha" Required="true"
                           Variant="Variant.Outlined" InputType="InputType.Password"
                           Style="background-color: #ffffff; border-radius: 20px;" />
         </MudPaper>
@@ -38,8 +38,6 @@
         {
             Administrator.Tipo = TipoUtilizador.Administrador;
             Administrator.DataDeCriacao = DateTime.Now;
-            Administrator.Senha = BCrypt.Net.BCrypt.HashPassword(Senha);
-
             await UtilizadorService.AddUtilizador(Administrator);
 
             Snackbar.Add("Administrador adicionado com sucesso!", Severity.Success);

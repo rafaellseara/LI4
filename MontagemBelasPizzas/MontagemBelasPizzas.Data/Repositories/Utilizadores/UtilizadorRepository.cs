@@ -37,6 +37,7 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
 
         public async Task Insert(Utilizador utilizador)
         {
+            utilizador.Senha = BCrypt.Net.BCrypt.HashPassword(utilizador.Senha);
             Console.WriteLine(utilizador.Senha);
             var parameters = new
             {
@@ -56,6 +57,7 @@ namespace MontagemBelasPizzas.Data.Repositories.Utilizadores
 
         public async Task Update(Utilizador utilizador)
         {
+            utilizador.Senha = BCrypt.Net.BCrypt.HashPassword(utilizador.Senha);
             var parameters = new
             {
                 utilizador.Id,
