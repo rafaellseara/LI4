@@ -1,26 +1,39 @@
-﻿<MudDialog MaxWidth="MaxWidth.Medium" Style="width: 800px; border-radius: 20px">
+﻿<MudDialog MaxWidth="MaxWidth.Medium" Style="width: 600px; border-radius: 20px; background-color: #F5F5F5;">
     <DialogContent>
 
-        <MudPaper Class="p-4 my-4" Elevation="1" Style="background-color: #FFFFFF; border-radius: 20px;">
-            <MudText Typo="Typo.subtitle1" Class="mb-2" Color="Color.Primary">Ingredientes</MudText>
+        <MudPaper Class="p-4 my-4" Elevation="1" Style="border-radius: 20px;">
+            <MudText Class="mb-2 fs-3" Color="Color.Primary" style="font-weight: 600">Ingredientes</MudText>
             <MudList T="Ingrediente">
                 @foreach (var ingrediente in Ingredientes)
                 {
-                    <MudListItem T="Ingrediente">
-                        <MudListItemIcon>
-                            <img src="@ingrediente.ImagemURL" alt="@ingrediente.Nome" style="width: 40px; height: 40px; object-fit: contain;" />
-                        </MudListItemIcon>
-                        <MudListItemText>
-                            <MudText Typo="Typo.body1">@ingrediente.Nome</MudText>
-                            <MudText Typo="Typo.body2" Class="text-gray-600">Quantidade: 100g Stock: @ingrediente.QuantidadeEmStock</MudText>
-                        </MudListItemText>
-                        @if (ingrediente.QuantidadeEmStock <= 0)
-                        {
-                            <MudListItemIcon>
-                                <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error" />
-                            </MudListItemIcon>
-                        }
-                    </MudListItem>
+                    <div Class="border-t">
+                        <MudListItem T="Ingrediente">
+                            <div class="d-flex flex-row space-x-4">
+                                <div class="rounded-full" style="background-color: #FFE9BA">
+                                    <MudListItemIcon>
+                                        <img src="@ingrediente.ImagemURL" alt="@ingrediente.Nome" style="width: 60px; height: 60px; object-fit: contain;"/>
+                                    </MudListItemIcon>
+                                </div>
+                                
+                                <div class="flex-column d-flex">
+                                    <MudListItemText>
+                                        <MudText Typo="Typo.h6" Style="color: #7B351C">@ingrediente.Nome</MudText>
+                                        <div class="flex flex-row space-x-4">
+                                            <MudText Typo="Typo.subtitle1" Style="color: #7B351C">Stock: @ingrediente.QuantidadeEmStock</MudText>
+                                            @if (ingrediente.QuantidadeEmStock <= 0)
+                                            {
+                                                <MudListItemIcon>
+                                                    <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+                                                </MudListItemIcon>
+                                            }
+                                        </div>
+                                        
+                                    </MudListItemText>
+                                </div>
+                            </div>
+                        </MudListItem>
+                    </div>
+                    
                 }
             </MudList>
         </MudPaper>
