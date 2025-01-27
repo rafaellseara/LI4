@@ -10,9 +10,9 @@ VALUES
 -- Inserir 3 produtos
 INSERT INTO Produto (Nome, Categoria, Preco, QuantidadeDeRealizacoes, QuantidadeDeVendas, QuantidadeDeRejeicoes, MediaDeSatisfacao, MediaDoTempoDeMontagem, QuantidadeEmStock, ImagemURL, IdAdministrador)
 VALUES
-('Pizza do Mar', 'Normal', 12.50, 10, 5, 1, 4.50, '00:20:00', 20, 'Images/pizzas/pizza_caprese.svg', 1),
-('Pizza Pepperoni', 'Normal', 10.00, 8, 4, 0, 4.75, '00:15:00', 15, 'Images/pizzas/pizza_mar.svg', 1),
-('Pizza Caprese', 'Vegetariano', 15.00, 12, 6, 2, 4.25, '00:30:00', 10, 'Images/pizzas/pizza_pepperoni.svg', 2);
+('Pizza do Mar', 'Normal', 12.50, 10, 5, 1, 4.50, '00:20:00', 20, 'Images/pizzas/pizza_mar.svg', 1),
+('Pizza Pepperoni', 'Normal', 10.00, 8, 4, 0, 4.75, '00:15:00', 15, 'Images/pizzas/pizza_pepperoni.svg ', 1),
+('Pizza Caprese', 'Vegetariano', 15.00, 12, 6, 2, 4.25, '00:30:00', 10, 'Images/pizzas/pizza_caprese.svg ', 2);
 
 -- Inserir 10 ingredientes
 INSERT INTO Ingrediente (Nome, Preco, QuantidadeEmStock, EmUso, ImagemURL, IdAdministrador)

@@ -232,7 +232,7 @@ else if (userRole == "Administrador")
                     TotalRevenue += venda.ValorTotal;
                 }
             }
-            TotalRevenue = TotalCost - TotalRevenue;
+            ProfitMargin = TotalCost - TotalRevenue;
         }
         catch (Exception ex)
         {
@@ -261,12 +261,17 @@ else if (userRole == "Administrador")
 
     private List<LinhaDeHistorico>? FilteredItems => Historico?
     .Where(item =>
-        string.IsNullOrEmpty(SearchTerm) ||
-        item.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pelo nome
-        item.Id.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pelo ID
-        item.Date.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pela data
-        item.Quantity.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) || // Pesquisa pela quantidade
-        item.Price.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) // Pesquisa pelo preço
+        string.IsNullOrEmpty(SearchTerm) || 
+        (SelectedSearchColumn switch
+        {
+            0 => item.Type.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase), // Pesquisa na coluna Tipo
+            1 => item.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase), // Pesquisa na coluna Nome
+            2 => item.Id.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase), // Pesquisa na coluna ID
+            3 => item.Date.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase), // Pesquisa na coluna Data
+            4 => item.Quantity.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase), // Pesquisa na coluna Quantidade
+            5 => item.Price.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase), // Pesquisa na coluna Preço
+            _ => false // Nenhuma correspondência
+        })
     )
     .OrderBy(item =>
     {
@@ -274,15 +279,16 @@ else if (userRole == "Administrador")
         {
             0 => item.Type, // Ordena pelo tipo (Ingrediente ou Produto)
             1 => item.Name, // Ordena pelo nome
-            2 => item.Id, // Ordena pelo ID
+            2 => int.TryParse(item.Id, out var id) ? id.ToString("D10") : "0000000000", // Ordena pelo ID como string numérica
             3 => item.Date, // Ordena pela data
-            4 => item.Quantity, // Ordena pela quantidade
-            5 => item.Price, // Ordena pelo preço
+            4 => int.TryParse(item.Quantity, out var qty) ? qty.ToString("D10") : "0000000000", // Ordena quantidade como string numérica
+            5 => decimal.TryParse(item.Price, out var price) ? price.ToString("0000000000.00") : "0000000000.00", // Ordena preço como string numérica formatada
             _ => item.Name
         };
     })
     .ToList();
-    
+
+
     private ChartOptions options1 = new ChartOptions();
     public List<ChartSeries> Series1 { get; set; } = new List<ChartSeries>();
     
