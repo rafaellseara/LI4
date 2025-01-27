@@ -14,7 +14,7 @@ CREATE PROCEDURE spLinhaDeMontagem_GetById
     @Id INT
 AS
 BEGIN
-    SELECT * FROM LinhasDeMontagem WHERE Id = @Id;
+    SELECT * FROM LinhaDeMontagem WHERE Id = @Id;
 END;
 GO
 
@@ -22,7 +22,7 @@ GO
 CREATE PROCEDURE spLinhaDeMontagem_GetAll
 AS
 BEGIN
-    SELECT * FROM LinhasDeMontagem;
+    SELECT * FROM LinhaDeMontagem;
 END;
 GO
 
@@ -36,7 +36,7 @@ CREATE PROCEDURE spLinhaDeMontagem_Insert
     @IdProduto INT
 AS
 BEGIN
-    INSERT INTO LinhasDeMontagem (DataDeInicio, DataDeFim, Estado, Satisfacao, IdFuncionario, IdProduto)
+    INSERT INTO LinhaDeMontagem (DataDeInicio, DataDeFim, Estado, Satisfacao, IdFuncionario, IdProduto)
     VALUES (@DataDeInicio, @DataDeFim, @Estado, @Satisfacao, @IdFuncionario, @IdProduto);
 END;
 GO
@@ -52,7 +52,7 @@ CREATE PROCEDURE spLinhaDeMontagem_Update
     @IdProduto INT
 AS
 BEGIN
-    UPDATE LinhasDeMontagem
+    UPDATE LinhaDeMontagem
     SET DataDeInicio = @DataDeInicio,
         DataDeFim = @DataDeFim,
         Estado = @Estado,
@@ -68,6 +68,6 @@ CREATE PROCEDURE spLinhaDeMontagem_Delete
     @Id INT
 AS
 BEGIN
-    DELETE FROM LinhasDeMontagem WHERE Id = @Id;
+    DELETE FROM LinhaDeMontagem WHERE Id = @Id;
 END;
 GO

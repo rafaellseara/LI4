@@ -15,16 +15,17 @@
                 <img src="@ImageURL" alt="@Title" class="rounded-full" style="width: 150px; height: 150px; object-fit: cover; margin: auto;" />
             </div>
 
-            <MudText Typo="Typo.body1" Class="mt-10">
-                <MudLink Href="@ReturnURL" Color="Color.Secondary">@ReturnText</MudLink>
-            </MudText>
+            <div class="mt-10">
+                <MudButton OnClick="ReturnActiveVal" Variant="Variant.Text" Style="color: #6c3e2c; font-size: .8rem; text-align: center; text-decoration: underline;">
+                    @ReturnText
+                </MudButton>
+            </div>
         </div>
     </DialogContent>
 </MudDialog>
 
 @code {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
-
     [Parameter] public string Title { get; set; } = "Pizza Concluída";
     [Parameter] public string ImageURL { get; set; } = "Images/logo/logo.png";
     [Parameter] public int Rating { get; set; } = 5;
@@ -34,11 +35,10 @@
     private int selectedVal = 0;
     private int? activeVal;
 
-    private void Confirmar()
-    {
-        MudDialog.Close(DialogResult.Ok(true));
-    }
-
     private void HandleHoveredValueChanged(int? val) => activeVal = val;
 
+    private void ReturnActiveVal()
+    {
+        MudDialog.Close(DialogResult.Ok(activeVal ?? selectedVal));
+    }
 }
