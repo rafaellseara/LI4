@@ -18,10 +18,22 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
             return await _operacaoRepository.GetAllCompras();
         }
 
+        // Obter todas as compras por administrador
+        public async Task<IEnumerable<Compra>> GetAllComprasByAdminId(int adminId)
+        {
+            return await _operacaoRepository.GetAllComprasByAdminId(adminId);
+        }
+
         // Obter todas as vendas
         public async Task<IEnumerable<Venda>> GetAllVendas()
         {
             return await _operacaoRepository.GetAllVendas();
+        }
+
+        // Obter todas as vendas por administrador
+        public async Task<IEnumerable<Venda>> GetAllVendasByAdminId(int adminId)
+        {
+            return await _operacaoRepository.GetAllVendasByAdminId(adminId);
         }
 
         public async Task AddCompra(int idIngrediente, int quantidade, int idAdministrador, decimal preco)
@@ -65,3 +77,4 @@ namespace MontagemBelasPizzas.Business.Services.Produtos
         }
     }
 }
+

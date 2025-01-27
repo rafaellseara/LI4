@@ -23,12 +23,34 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
             return result;
         }
 
+        // Obter todas as compras por administrador
+        public async Task<IEnumerable<Compra>> GetAllComprasByAdminId(int adminId)
+        {
+            var result = await _db.LoadData<Compra, dynamic>(
+                storedProcedure: "spCompra_GetAllByAdminId",
+                parameters: new { IdAdministrador = adminId }
+            );
+
+            return result;
+        }
+
         // Obter todas as vendas
         public async Task<IEnumerable<Venda>> GetAllVendas()
         {
             var result = await _db.LoadData<Venda, dynamic>(
                 storedProcedure: "spVenda_GetAll",
                 parameters: new { }
+            );
+
+            return result;
+        }
+
+        // Obter todas as vendas por administrador
+        public async Task<IEnumerable<Venda>> GetAllVendasByAdminId(int adminId)
+        {
+            var result = await _db.LoadData<Venda, dynamic>(
+                storedProcedure: "spVenda_GetAllByAdminId",
+                parameters: new { IdAdministrador = adminId }
             );
 
             return result;
@@ -43,6 +65,6 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
         {
             await _db.SaveData("spInserirVenda", parameters);
         }
-
     }
 }
+
