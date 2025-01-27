@@ -51,6 +51,7 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
                 linha.DataDeInicio,
                 linha.DataDeFim,
                 linha.Estado,
+                linha.Satisfacao,
                 linha.IdFuncionario,
                 linha.IdProduto
             };
