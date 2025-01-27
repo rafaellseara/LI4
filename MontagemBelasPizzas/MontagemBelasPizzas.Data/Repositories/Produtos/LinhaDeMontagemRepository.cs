@@ -27,7 +27,7 @@ namespace MontagemBelasPizzas.Data.Repositories.Produtos
         {
             var parameters = new { IdFuncionario = funcionarioId };
             var result = await _db.LoadData<LinhaDeMontagem, dynamic>(
-                storedProcedure: "GetLinhasDeMontagemPorUtilizador",
+                storedProcedure: "spGetLinhasDeMontagemPorUtilizador",
                 parameters: parameters
             );
 

@@ -50,13 +50,13 @@ VALUES
 
 
 -- Inserir 5 linhas de montagem
-INSERT INTO LinhaDeMontagem (DataDeInicio, DataDeFim, Estado, IdFuncionario, IdProduto)
+INSERT INTO LinhaDeMontagem (DataDeInicio, DataDeFim, Estado, Satisfacao, IdFuncionario, IdProduto)
 VALUES
-('2025-01-01 08:00:00', '2025-01-01 10:00:00', 1, 3, 1), -- Completado
-('2025-01-02 09:00:00', '2025-01-02 11:30:00', 1, 3, 2), -- Completado
-('2025-01-03 10:00:00', '2025-01-03 12:15:00', 0, 4, 3), -- Rejeitado
-('2025-01-04 08:30:00', '2025-01-04 10:45:00', 1, 4, 2), -- Completado
-('2025-01-05 07:00:00', '2025-01-05 09:20:00', 0, 5, 1); -- Rejeitado
+('2025-01-01 08:00:00', '2025-01-01 10:00:00', 1, 2, 3, 1), -- Completado
+('2025-01-02 09:00:00', '2025-01-02 11:30:00', 1, 4, 3, 2), -- Completado
+('2025-01-03 10:00:00', '2025-01-03 12:15:00', 0, 0, 4, 3), -- Rejeitado
+('2025-01-04 08:30:00', '2025-01-04 10:45:00', 1, 5, 4, 2), -- Completado
+('2025-01-05 07:00:00', '2025-01-05 09:20:00', 0, 0, 5, 1); -- Rejeitado
 
 -- Inserir Operações
 INSERT INTO Operacao (Quantidade, ValorUnitario, ValorTotal, DataDaOperacao, IdAdministrador)
